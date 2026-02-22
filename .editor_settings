@@ -1,0 +1,193 @@
+{
+  :bundle {
+    :html5 {
+      :architectures #{
+        "wasm-web"
+      }
+      :build_report false
+      :contentless false
+      :liveupdate false
+      :texture_compression "enabled"
+      :variant "debug"
+      :with_symbols true
+    }
+    :last-bundle-command :project.bundle-html5
+    :output-directory "C:\\Users\\lastm\\Documents\\defold-project\\build"
+  }
+  :code {
+    :breakpoints [
+    ]
+    :find {
+      :term "if can_drop then"
+      :wrap true
+    }
+  }
+  :workflow {
+    :open-tabs [
+      [
+        [
+          "/main/game.collection"
+          :scene
+        ]
+        [
+          "/game/modules/game_config.lua"
+          :code
+        ]
+        [
+          "/game/modules/card_utils.lua"
+          :code
+        ]
+        [
+          "/game/modules/systems/game_flow_system.lua"
+          :code
+        ]
+        [
+          "/game/modules/systems/drag_drop_system.lua"
+          :code
+        ]
+        [
+          "/game/modules/systems/rules_system.lua"
+          :code
+        ]
+        [
+          "/assets/cards/kcards.atlas"
+          :scene
+        ]
+        [
+          "/game/scripts/one_shot_particle.script"
+          :code
+        ]
+      ]
+    ]
+    :recent-files [
+      [
+        "/game/scripts/card.script"
+        :code
+      ]
+      [
+        "/game/objects/magic_poof.go"
+        :scene
+      ]
+      [
+        "/game/scripts/one_shot_effect.script"
+        :code
+      ]
+      [
+        "/game/shaders/background/background.vp"
+        :code
+      ]
+      [
+        "/game/shaders/castle/castle.vp"
+        :code
+      ]
+      [
+        "/game/modules/anchor_data.lua"
+        :code
+      ]
+      [
+        "/assets/sky/sky.atlas"
+        :scene
+      ]
+      [
+        "/game/scripts/castle_controller.script"
+        :code
+      ]
+      [
+        "/game/scripts/game_ui.gui_script"
+        :code
+      ]
+      [
+        "/game/scripts/screen_anchor.gui_script"
+        :code
+      ]
+      [
+        "/game/gui/castle_anchor.gui"
+        :scene
+      ]
+      [
+        "/assets/lighting/lighting.atlas"
+        :scene
+      ]
+      [
+        "/game/scripts/bolt.script"
+        :code
+      ]
+      [
+        "/game/modules/coords.lua"
+        :code
+      ]
+      [
+        "/game/shaders/castle/castle.fp"
+        :code
+      ]
+      [
+        "/game/objects/bolt.go"
+        :scene
+      ]
+      [
+        "/game/objects/card.go"
+        :scene
+      ]
+      [
+        "/game/render/game.render_script"
+        :code
+      ]
+      [
+        "/game/shaders/castle/castle.material"
+        :cljfx-form-view
+      ]
+      [
+        "/game/shaders/background/background.material"
+        :cljfx-form-view
+      ]
+      [
+        "/game/scripts/bolt_controller.script"
+        :code
+      ]
+      [
+        "/game/scripts/lightning_controller.script"
+        :code
+      ]
+      [
+        "/assets/lightning/lightning.atlas"
+        :scene
+      ]
+      [
+        "/game/shaders/background/background.fp"
+        :code
+      ]
+      [
+        "/main/game.collection"
+        :scene
+      ]
+      [
+        "/game/modules/game_config.lua"
+        :code
+      ]
+      [
+        "/game/modules/card_utils.lua"
+        :code
+      ]
+      [
+        "/game/modules/systems/game_flow_system.lua"
+        :code
+      ]
+      [
+        "/game/modules/systems/drag_drop_system.lua"
+        :code
+      ]
+      [
+        "/game/modules/systems/rules_system.lua"
+        :code
+      ]
+      [
+        "/assets/cards/kcards.atlas"
+        :scene
+      ]
+      [
+        "/game/scripts/one_shot_particle.script"
+        :code
+      ]
+    ]
+  }
+}

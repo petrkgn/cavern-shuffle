@@ -1,0 +1,24 @@
+name: "main"
+scale_along_z: 0
+embedded_instances {
+  id: "manager"
+  data: "components {\n"
+  "  id: \"proxy_controller\"\n"
+  "  component: \"/game/scripts/manager.script\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"game_proxy\"\n"
+  "  type: \"collectionproxy\"\n"
+  "  data: \"collection: \\\"/main/game.collection\\\"\\n"
+  "\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "menu"
+  data: "components {\n"
+  "  id: \"gui\"\n"
+  "  component: \"/game/gui/menu.gui\"\n"
+  "}\n"
+  ""
+}

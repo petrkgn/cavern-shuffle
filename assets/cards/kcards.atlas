@@ -1,0 +1,190 @@
+images {
+  image: "/assets/cards/Hand Drawn Cards/card_back.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Clubs/card_clubs_02.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Clubs/card_clubs_03.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Clubs/card_clubs_04.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Clubs/card_clubs_05.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Clubs/card_clubs_06.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Clubs/card_clubs_07.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Clubs/card_clubs_08.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Clubs/card_clubs_09.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Clubs/card_clubs_10.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Clubs/card_clubs_A.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Clubs/card_clubs_J.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Clubs/card_clubs_K.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Clubs/card_clubs_Q.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Diamonds/card_diamonds_02.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Diamonds/card_diamonds_03.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Diamonds/card_diamonds_04.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Diamonds/card_diamonds_05.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Diamonds/card_diamonds_06.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Diamonds/card_diamonds_07.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Diamonds/card_diamonds_08.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Diamonds/card_diamonds_09.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Diamonds/card_diamonds_10.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Diamonds/card_diamonds_A.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Diamonds/card_diamonds_J.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Diamonds/card_diamonds_K.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Diamonds/card_diamonds_Q.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Hearts/card_hearts_02.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Hearts/card_hearts_03.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Hearts/card_hearts_04.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Hearts/card_hearts_05.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Hearts/card_hearts_06.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Hearts/card_hearts_07.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Hearts/card_hearts_08.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Hearts/card_hearts_09.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Hearts/card_hearts_10.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Hearts/card_hearts_A.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Hearts/card_hearts_J.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Hearts/card_hearts_K.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Hearts/card_hearts_Q.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Spades/card_spades_02.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Spades/card_spades_03.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Spades/card_spades_04.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Spades/card_spades_05.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Spades/card_spades_06.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Spades/card_spades_07.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Spades/card_spades_08.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Spades/card_spades_09.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Spades/card_spades_10.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Spades/card_spades_A.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Spades/card_spades_J.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Spades/card_spades_K.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/Spades/card_spades_Q.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/card_empty.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/party_placeholder_clubs.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/party_placeholder_diamonds.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/party_placeholder_hearts.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/party_placeholder_spades.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/item_placeholder_1.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/item_placeholder_2.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/item_placeholder_3.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/item_placeholder_4.png"
+}
+images {
+  image: "/assets/cards/Hand Drawn Cards/item_joker.png"
+}
+extrude_borders: 2

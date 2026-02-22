@@ -1,0 +1,9 @@
+-- debug_path.script
+function init(self)
+	self.resolution = nil
+	print("Мой реальный ID:", go.get_id())
+end
+
+function update(self)
+	print("resolution:", self.resolution)
+end

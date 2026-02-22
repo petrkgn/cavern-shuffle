@@ -1,0 +1,24 @@
+# Defold
+/.internal
+/build
+*.dms
+*.tml
+/builtins
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.idea/
+.vscode/settings.json
+*.sublime-*
+
+# Logs
+*.log
+
+# Private keys (never commit these!)
+manifest.private.der
+manifest.private.key
+*.private.*

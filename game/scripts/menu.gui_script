@@ -1,0 +1,23 @@
+-- /main/menu.gui_script
+
+function init(self)
+	-- Пусто. Этот скрипт больше не управляет фокусом.
+end
+
+function on_input(self, action_id, action)
+	-- Проверяем, было ли нажатие на наш текстовый узел
+	if action.pressed and action_id == hash("touch") then
+		local play_button = gui.get_node("play_button")
+		if gui.pick_node(play_button, action.x, action.y) then
+			-- Кнопка нажата!
+			print("Menu: Button clicked. Informing the manager.")
+
+			-- Просто отправляем сообщение. Больше ничего.
+			-- Убедитесь, что ID вашего скрипта-менеджера 'proxy_controller'
+			msg.post("manager#proxy_controller", "load_game")
+
+			-- Можно даже не отключать кнопку, т.к. скоро весь GUI будет выключен менеджером.
+		end
+	end
+	return true
+end

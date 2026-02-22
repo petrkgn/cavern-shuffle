@@ -1,0 +1,299 @@
+// uniform highp mat4 view_proj;
+// uniform highp vec4 settings; 
+// // settings.x = rot (угол)
+// // settings.y = center_x (мировая позиция X)
+// // settings.z = center_y (мировая позиция Y - если нужно, но для skew достаточно X)
+// 
+// attribute highp vec4 position;
+// attribute mediump vec2 texcoord0;
+// 
+// varying mediump vec2 var_texcoord0;
+// varying mediump float var_rot;
+// 
+// void main()
+// {
+// 	float rot = settings.x;
+// 	float center_x = settings.y;
+// 
+// 	// Вычисляем локальную координату X относительно переданного центра
+// 	float local_x = position.x - center_x;
+// 
+// 	// 1. Расчет искажения (Skew/Shear)
+// 	// Сдвигаем Y в зависимости от расстояния от центра (local_x)
+// 	float skew_amount = 0.5 * (1.0 - abs(rot)) * -sign(rot);
+// 
+// 	vec4 pos = position;
+// 
+// 	// Применяем skew к Y
+// 	pos.y = pos.y + (local_x * skew_amount);
+// 
+// 	// 2. Сжатие по ширине (перспектива)
+// 	// Возвращаем сжатый local_x обратно к мировому центру
+// 	pos.x = center_x + (local_x * abs(rot));
+// 
+// 	gl_Position = view_proj * vec4(pos.xyz, 1.0);
+// 	var_texcoord0 = texcoord0;
+// 	var_rot = rot;
+// }
+
+//------------------------------------------------------------------------------
+// game/shaders/card_flip.vp
+
+// ИСПРАВЛЕНИЕ: Используем view_proj вместо mtx_worldviewproj
+// Так как Vertex Space = World, нам не нужна Model Matrix
+// uniform highp mat4 view_proj;
+// uniform highp vec4 settings;    // x=rot, y=center_x, z=center_y
+// uniform highp vec4 deformation; // x=velocity_x, y=velocity_y (Сила инерции)
+// 
+// attribute highp vec4 position;
+// attribute mediump vec2 texcoord0;
+// 
+// varying mediump vec2 var_texcoord0;
+// varying mediump float var_rot;
+// 
+// void main()
+// {
+// 	float rot = settings.x;
+// 	float center_x = settings.y;
+// 	float center_y = settings.z;
+// 
+// 	// 1. Локальные координаты
+// 	float local_x = position.x - center_x;
+// 	float local_y = position.y - center_y;
+// 
+// 	// === ЭФФЕКТ ИНЕРЦИИ (DRAG LAG) ===
+// 	// deformation.x - это скорость по горизонтали.
+// 	// Мы хотим, чтобы при движении вправо низ отставал влево.
+// 	// local_y отрицательный внизу карты и положительный вверху.
+// 
+// 	// Формула Shear: сдвигаем X в зависимости от Y
+// 	// Коэффициент 0.05 подбираем на глаз (мягкость картона)
+// 	local_x += local_y * deformation.x; 
+// 
+// 	// Сдвигаем Y в зависимости от X (если тянем вверх/вниз)
+// 	local_y += local_x * deformation.y;
+// 
+// 	// === ЭФФЕКТЫ ПЕРЕВОРОТА (FLIP) ===
+// 
+// 	// Zoom
+// 	float zoom = 1.0 + 0.2 * (1.0 - abs(rot));
+// 	local_x *= zoom;
+// 	local_y *= zoom;
+// 
+// 	// Skew (Flip)
+// 	float skew_amount = 0.5 * (1.0 - abs(rot)) * -sign(rot);
+// 	local_y += local_x * skew_amount;
+// 
+// 	// Perspective
+// 	local_x *= abs(rot);
+// 
+// 	// 5. Обратно в мировые
+// 	vec4 pos = position;
+// 	pos.x = center_x + local_x;
+// 	pos.y = center_y + local_y;
+// 
+// 	gl_Position = view_proj * vec4(pos.xyz, 1.0);
+// 	var_texcoord0 = texcoord0;
+// 	var_rot = rot;
+// }
+//----------------------------------------------------------------------
+// uniform highp mat4 view_proj;
+// uniform highp vec4 settings;    // x=rot, y=center_x, z=center_y
+// uniform highp vec4 deformation; // x=velocity_x, y=velocity_y
+// 
+// attribute highp vec4 position;
+// attribute mediump vec2 texcoord0;
+// 
+// varying mediump vec2 var_texcoord0;
+// varying mediump float var_rot;
+// 
+// void main()
+// {
+// 	float rot = settings.x;
+// 	float center_x = settings.y;
+// 	float center_y = settings.z;
+// 
+// 	// 1. Переходим в локальные координаты (центр карты = 0,0)
+// 	float local_x = position.x - center_x;
+// 	float local_y = position.y - center_y;
+// 
+// 	// === НОВЫЙ ЭФФЕКТ ИНЕРЦИИ (SWING / ROTATION) ===
+// 
+// 	// Настраиваем чувствительность. 
+// 	// Чем больше число, тем сильнее карта наклоняется при той же скорости.
+// 	// Отрицательный знак нужен, чтобы при движении ВПРАВО низ отставал ВЛЕВО (по часовой стрелке).
+// 	float inertia_strength = -2.0; 
+// 
+// 	// Вычисляем угол наклона (в радианах) на основе горизонтальной скорости.
+// 	// deformation.x — это смещение/скорость по X.
+// 	float swing_angle = deformation.x * inertia_strength;
+// 
+// 	// Ограничиваем угол, чтобы карту не закрутило "вертолетом" при резком рывке.
+// 	// 0.5 радиан ≈ 30 градусов.
+// 	swing_angle = clamp(swing_angle, -0.5, 0.5);
+// 
+// 	// Матрица вращения 2D:
+// 	// x' = x*cos(a) - y*sin(a)
+// 	// y' = x*sin(a) + y*cos(a)
+// 	float s = sin(swing_angle);
+// 	float c = cos(swing_angle);
+// 
+// 	float rotated_x = local_x * c - local_y * s;
+// 	float rotated_y = local_x * s + local_y * c;
+// 
+// 	// Применяем вращение
+// 	local_x = rotated_x;
+// 	local_y = rotated_y;
+// 
+// 	// Примечание: Для эффекта жесткой карты мы обычно игнорируем deformation.y (вертикаль),
+// 	// так как наклон вперед/назад в 2D выглядит странно без полноценного 3D.
+// 	// Но если очень хочется, можно добавить небольшой наклон (Pitch), но это усложнит код переворота.
+// 
+// 	// === ЭФФЕКТЫ ПЕРЕВОРОТА (FLIP) - ОСТАВЛЯЕМ КАК БЫЛО ===
+// 
+// 	// Zoom (уменьшение размера при повороте ребром)
+// 	float zoom = 1.0 + 0.2 * (1.0 - abs(rot));
+// 	local_x *= zoom;
+// 	local_y *= zoom;
+// 
+// 	// Skew (Искажение перспективы при перевороте)
+// 	float skew_amount = 0.5 * (1.0 - abs(rot)) * -sign(rot);
+// 	local_y += local_x * skew_amount;
+// 
+// 	// Perspective (Сжатие ширины)
+// 	local_x *= abs(rot);
+// 
+// 	// 5. Обратно в мировые координаты
+// 	vec4 pos = position;
+// 	pos.x = center_x + local_x;
+// 	pos.y = center_y + local_y;
+// 
+// 	gl_Position = view_proj * vec4(pos.xyz, 1.0);
+// 	var_texcoord0 = texcoord0;
+// 	var_rot = rot;
+// }
+
+uniform highp mat4 view_proj;
+uniform highp vec4 settings;    // x=rot(flip), y=center_x, z=center_y
+uniform highp vec4 deformation; // x=velocity_x (inertia)
+uniform highp vec4 cursor;      // x=tilt_x, y=tilt_y, z=intensity
+
+uniform highp vec4 time_vec;   // x = time
+uniform highp vec4 hit_params; 
+
+attribute highp vec4 position;
+attribute mediump vec2 texcoord0;
+
+varying mediump vec2 var_texcoord0;
+varying mediump float var_rot;
+varying mediump vec2 var_local_pos; // Для подсветки рамки
+
+// Псевдо-рандом (из примера)
+float rand(vec2 co){
+	return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+void main()
+{
+	float center_x = settings.y;
+	float center_y = settings.z;
+
+	// Локальные координаты вершины
+	float x = position.x - center_x;
+	float y = position.y - center_y;
+	float z = 0.0;
+
+	// === ЭФФЕКТ ТРЯСКИ (SHAKE) ===
+	// Применяем ДО вращений, чтобы тряслась сама карта
+	if (hit_params.x > 0.5 && hit_params.x < 1.5)  // Если is_hit == true
+	{
+		float time = time_vec.x * 30.0; // Быстрая смена кадров шума
+
+		// Генерируем случайный сдвиг
+		vec2 random_offset = vec2(
+			rand(vec2(time, 0.0)) * 2.0 - 1.0,
+			rand(vec2(time, 10.0)) * 2.0 - 1.0
+		);
+
+		// Сила тряски (примерно 5 пикселей амплитуда)
+		float shake_amp = 5.0 * hit_params.y; 
+
+		x += random_offset.x * shake_amp;
+		y += random_offset.y * shake_amp;
+	}
+	
+
+	// === 1. INERTIA (Swing Z-Rotation) - Ваша старая инерция ===
+	// Вращение в плоскости экрана (вокруг Z)
+	float swing_angle = clamp(deformation.x * -2.0, -0.5, 0.5);
+	float s = sin(swing_angle);
+	float c = cos(swing_angle);
+	float nx = x * c - y * s;
+	float ny = x * s + y * c;
+	x = nx; y = ny;
+
+	var_local_pos = vec2(x, y);
+
+	// === 2. FLIP (Y-Axis Rotation) - Переворот карты ===
+	// Сжимаем X в зависимости от прогресса переворота
+	float flip_rot = settings.x;
+
+	// Эффекты переворота (Zoom + Skew)
+	float zoom = 1.0 + 0.2 * (1.0 - abs(flip_rot));
+	x *= zoom; y *= zoom;
+	float skew = 0.5 * (1.0 - abs(flip_rot)) * -sign(flip_rot);
+	y += x * skew;
+	x *= abs(flip_rot); // Само сжатие
+
+	// === ВАЖНОЕ ИЗМЕНЕНИЕ ЗДЕСЬ ===
+	// Сохраняем координаты для рамки ДО применения 3D-наклона и Перспективы.
+	// Так рамка будет "приклеена" к плоскости карты и не будет искажаться перспективой неправильно.
+	// var_local_pos = vec2(x, y); 
+	
+	// === 3. MOUSE TILT (3D Rotation) - Эффект React ===
+	// cursor.x (мышь лево/право) -> Вращение вокруг Y
+	// cursor.y (мышь верх/низ)   -> Вращение вокруг X
+	// cursor.z - сила эффекта (0 или 1)
+
+	// Максимальный угол наклона (в радианах). 0.3 rad ~= 17 градусов
+	float max_tilt = 0.6; 
+	float tilt_y = cursor.x * max_tilt * cursor.z; // Вокруг Y
+	float tilt_x = -cursor.y * max_tilt * cursor.z; // Вокруг X (инвертируем для естественности)
+
+	// Вращение вокруг Y (Tilt Left/Right)
+	// x' = x*cos - z*sin
+	// z' = x*sin + z*cos
+	float cy = cos(tilt_y);
+	float sy = sin(tilt_y);
+	float x_new = x * cy - z * sy;
+	float z_new = x * sy + z * cy;
+	x = x_new; z = z_new;
+
+	// Вращение вокруг X (Tilt Up/Down)
+	// y' = y*cos - z*sin
+	// z' = y*sin + z*cos
+	float cx = cos(tilt_x);
+	float sx = sin(tilt_x);
+	float y_new = y * cx - z * sx;
+	z_new = y * sx + z * cx;
+	y = y_new; z = z_new;
+
+	// === 4. ПЕРСПЕКТИВА ===
+	// Так как в Defold камера обычно ортогональная (плоская),
+	// нам нужно вручную применить перспективное деление, чтобы
+	// дальние углы (z < 0) казались меньше, а ближние (z > 0) больше.
+	// 0.003 - сила перспективы. Подбирается на глаз.
+
+	float perspective = 1.0 / (1.0 - z * 0.002);
+	x *= perspective;
+	y *= perspective;
+
+	// 5. Обратно в мировые
+	vec4 final_pos = position;
+	final_pos.x = center_x + x;
+	final_pos.y = center_y + y;
+
+	gl_Position = view_proj * vec4(final_pos.xyz, 1.0);
+	var_texcoord0 = texcoord0;
+	var_rot = flip_rot;
+}

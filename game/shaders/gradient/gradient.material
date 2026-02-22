@@ -1,0 +1,12 @@
+name: "gradient"
+tags: "gradient_sky"
+vertex_program: "/game/shaders/gradient/gradient.vp"
+fragment_program: "/game/shaders/gradient/gradient.fp"
+samplers {
+  name: "texture_sampler"
+  wrap_u: WRAP_MODE_REPEAT
+  wrap_v: WRAP_MODE_REPEAT
+  filter_min: FILTER_MODE_MIN_NEAREST
+  filter_mag: FILTER_MODE_MAG_NEAREST
+  max_anisotropy: 0.0
+}

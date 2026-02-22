@@ -1,0 +1,69 @@
+script: "/game/scripts/tutorial_ui.gui_script"
+fonts {
+  name: "tooltip"
+  font: "/assets/fonts/tooltip.font"
+}
+nodes {
+  position {
+    x: -2.0
+  }
+  size {
+    x: 280.0
+    y: 120.0
+  }
+  color {
+    x: 0.6
+    y: 0.6
+    z: 0.6
+  }
+  type: TYPE_BOX
+  id: "balloon_root"
+  xanchor: XANCHOR_LEFT
+  yanchor: YANCHOR_TOP
+  adjust_mode: ADJUST_MODE_STRETCH
+  inherit_alpha: true
+  alpha: 0.24
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  size {
+    x: 260.0
+  }
+  color {
+    x: 0.302
+    y: 0.0
+    z: 0.102
+  }
+  type: TYPE_TEXT
+  font: "tooltip"
+  id: "art_text"
+  xanchor: XANCHOR_LEFT
+  yanchor: YANCHOR_TOP
+  pivot: PIVOT_S
+  line_break: true
+  parent: "balloon_root"
+  inherit_alpha: true
+}
+nodes {
+  size {
+    x: 260.0
+  }
+  color {
+    x: 0.302
+    y: 0.0
+    z: 0.102
+  }
+  type: TYPE_TEXT
+  text: "<text>"
+  font: "tooltip"
+  id: "help_text"
+  xanchor: XANCHOR_LEFT
+  yanchor: YANCHOR_TOP
+  pivot: PIVOT_N
+  adjust_mode: ADJUST_MODE_STRETCH
+  line_break: true
+  parent: "balloon_root"
+  inherit_alpha: true
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

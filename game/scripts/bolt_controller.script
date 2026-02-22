@@ -1,0 +1,33 @@
+function init(self)
+	-- 1. СЛУЧАЙНЫЙ РАЗМЕР
+	-- Генерируем масштаб от 0.8 до 1.5
+	local scale = 0.4 + math.random() * 0.4
+	go.set_scale(vmath.vector3(scale, scale, 1.0))
+
+	-- 2. НАКЛОН К ЦЕНТРУ (К ЗАМКУ)
+	-- Получаем ширину экрана из конфига (или можно передать через factory.create, но так проще)
+	local win_w = sys.get_config("display.width")
+	local center_x = win_w / 2
+	local my_pos = go.get_position()
+
+	-- Рассчитываем фактор отклонения:
+	-- Если x=0 (слева), factor = 1. Если x=center, factor = 0. Если x=width, factor = -1.
+	local dist_factor = (center_x - my_pos.x) / center_x 
+
+	-- Максимальный угол наклона (в радианах). 0.4 rad ≈ 23 градуса.
+	local max_angle = 0.6
+
+	-- Добавляем немного шума (+- 0.1 рад), чтобы наклон был не слишком идеальным
+	local random_wobble = (math.random() * 0.2) - 0.1
+	local final_angle = (dist_factor * max_angle) + random_wobble
+
+	-- Применяем поворот
+	go.set_rotation(vmath.quat_rotation_z(final_angle))
+
+	-- 3. ЗАПУСК И УДАЛЕНИЕ
+	-- Запускаем анимацию "bolt"
+	-- Когда она закончится (Playback: Once Forward), сработает функция удаления
+	sprite.play_flipbook("#sprite", "bolt", function()
+		go.delete()
+	end)
+end

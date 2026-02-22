@@ -1,0 +1,19 @@
+script: "/game/scripts/screen_anchor.gui_script"
+nodes {
+  position {
+    x: 512.0
+  }
+  size {
+    x: 1.0
+    y: 1.0
+  }
+  type: TYPE_BOX
+  id: "anchor_bottom"
+  yanchor: YANCHOR_BOTTOM
+  pivot: PIVOT_S
+  inherit_alpha: true
+  alpha: 0.0
+  size_mode: SIZE_MODE_AUTO
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

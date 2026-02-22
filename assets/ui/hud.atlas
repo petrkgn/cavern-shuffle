@@ -1,0 +1,4 @@
+images {
+  image: "/assets/ui/proggress_bar_frame_small.png"
+}
+extrude_borders: 2

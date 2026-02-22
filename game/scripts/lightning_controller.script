@@ -1,0 +1,94 @@
+local Coords = require("game.modules.coords")
+
+local function hash_glsl(p_x, p_y)
+	local v_x, v_y = 15.32, 35.78
+	local dot = p_x * v_x + p_y * v_y
+	local res = math.sin(dot) * 43758.23
+	return res - math.floor(res)
+end
+
+function init(self)
+	self.time = 0
+	self.last_t = -1 
+
+	self.background_model_url = msg.url("/background#model")
+	self.castle_sprite_url = msg.url("/castle#sprite")	
+
+	msg.post("@render:", "listen_for_resolution")
+
+	self.win_w = sys.get_config("display.width")
+	self.win_h = sys.get_config("display.height")
+	self.game_w = sys.get_config("display.width")
+	self.game_h = sys.get_config("display.height")
+
+	Coords.recalculate(self.win_w, self.win_h, self.win_w, self.win_h)
+
+	-- [НОВОЕ] Сразу передаем разрешение в ОБА шейдера при старте
+	local res = vmath.vector4(self.win_w, self.win_h, 0, 0)
+	go.set(self.background_model_url, "resolution", res)
+	go.set(self.castle_sprite_url, "resolution", res)
+end
+
+function update(self, dt)
+	self.time = self.time + dt
+
+	local lightning_check_frequency = 1.5 
+	local lightning_chance_threshold = 0.98 -- Шанс удара (чем меньше число, тем чаще)
+
+	local t = math.floor(lightning_check_frequency * self.time)
+
+	local flash_intensity = 0.0
+	local flash_origin_u = 0.0
+	local flash_origin_v = 0.0
+
+	if (hash_glsl(t + 2.3, 0.0) > lightning_chance_threshold) then
+		flash_intensity = 1.1
+		flash_origin_u = 0.05 + 0.9 * hash_glsl(t, 0.0) -- От 5% до 95% ширины
+		flash_origin_v = 0.95 
+
+		if t ~= self.last_t then
+			local world_left, _ = Coords.screen_to_game(0, 0)
+			local world_right, _ = Coords.screen_to_game(self.win_w, 0)
+
+			local visible_world_width = world_right - world_left
+
+			local world_x = world_left + (flash_origin_u * visible_world_width)
+
+			-- Берем верхнюю границу экрана в игровых координатах
+			local _, world_top = Coords.screen_to_game(0, self.win_h)
+			local world_y = world_top - 10
+
+			local pos = vmath.vector3(world_x, world_y, 0.5)
+			factory.create("#bolt_factory", pos)
+		end
+	end
+
+	self.last_t = t
+
+	local flash_params = vmath.vector4(flash_origin_u, flash_origin_v, flash_intensity, 0)
+	local shader_time = vmath.vector4(self.time, 0, 0, 0)
+
+	-- Обновляем ФОН
+	go.set(self.background_model_url, "time", shader_time)
+	go.set(self.background_model_url, "flash_params", flash_params)
+
+	-- Обновляем ЗАМОК
+	go.set(self.castle_sprite_url, "time", shader_time)
+	go.set(self.castle_sprite_url, "flash_params", flash_params)
+end
+
+function on_message(self, message_id, message)
+	if message_id == hash("set_resolution") then
+		self.win_w = message.win_w
+		self.win_h = message.win_h
+		self.game_w = message.game_w
+		self.game_h = message.game_h
+
+		Coords.recalculate(message.game_w, message.game_h, message.win_w, message.win_h)
+
+		-- [НОВОЕ] Обновляем разрешение в ОБОИХ шейдерах
+		local res = vmath.vector4(message.win_w, message.win_h, 0, 0)
+		go.set(self.background_model_url, "resolution", res)
+		go.set(self.castle_sprite_url, "resolution", res)
+	end
+end

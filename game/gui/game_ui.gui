@@ -1,0 +1,245 @@
+script: "/game/scripts/game_ui.gui_script"
+fonts {
+  name: "ui_bold"
+  font: "/assets/fonts/ui_bold.font"
+}
+textures {
+  name: "kcards"
+  texture: "/assets/cards/kcards.atlas"
+}
+textures {
+  name: "hud"
+  texture: "/assets/ui/hud.atlas"
+}
+nodes {
+  position {
+    x: 881.0
+    y: 72.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "No turn?"
+  font: "ui_bold"
+  id: "check_moves_button"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 522.0
+    y: 252.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  font: "ui_bold"
+  id: "hint_text"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 512.0
+    y: 768.0
+  }
+  type: TYPE_BOX
+  id: "top_panel"
+  yanchor: YANCHOR_TOP
+  pivot: PIVOT_N
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 11.0
+    y: -44.0
+    z: 0.5
+  }
+  size {
+    x: 600.0
+    y: 59.0
+  }
+  type: TYPE_BOX
+  id: "hud_bg"
+  parent: "top_panel"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    x: 68.0
+  }
+  size {
+    x: 100.0
+    y: 10.0
+  }
+  color {
+    x: 0.0
+  }
+  type: TYPE_BOX
+  id: "party_bar"
+  pivot: PIVOT_E
+  parent: "hud_bg"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 75.0
+    y: -2.0
+  }
+  size {
+    x: 225.0
+    y: 50.0
+  }
+  color {
+    x: 0.6
+    y: 0.6
+    z: 0.6
+  }
+  type: TYPE_BOX
+  id: "slots_container"
+  pivot: PIVOT_W
+  parent: "hud_bg"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  size {
+    x: 52.0
+    y: 52.0
+  }
+  type: TYPE_BOX
+  texture: "kcards/card_hearts_A"
+  id: "icon_hearts"
+  pivot: PIVOT_W
+  parent: "slots_container"
+  inherit_alpha: true
+  alpha: 0.0
+}
+nodes {
+  position {
+    x: 56.0
+  }
+  size {
+    x: 52.0
+    y: 52.0
+  }
+  type: TYPE_BOX
+  texture: "kcards/card_diamonds_A"
+  id: "icon_diamonds"
+  pivot: PIVOT_W
+  parent: "slots_container"
+  inherit_alpha: true
+  alpha: 0.0
+}
+nodes {
+  position {
+    x: 112.0
+  }
+  size {
+    x: 52.0
+    y: 52.0
+  }
+  type: TYPE_BOX
+  texture: "kcards/card_spades_A"
+  id: "icon_spades"
+  pivot: PIVOT_W
+  parent: "slots_container"
+  inherit_alpha: true
+  alpha: 0.0
+}
+nodes {
+  position {
+    x: 168.0
+  }
+  size {
+    x: 52.0
+    y: 52.0
+  }
+  type: TYPE_BOX
+  texture: "kcards/card_clubs_A"
+  id: "icon_clubs"
+  pivot: PIVOT_W
+  parent: "slots_container"
+  inherit_alpha: true
+  alpha: 0.0
+}
+nodes {
+  position {
+    x: -132.0
+  }
+  size {
+    x: 100.0
+    y: 10.0
+  }
+  color {
+    x: 0.702
+    y: 0.102
+    z: 0.102
+  }
+  type: TYPE_BOX
+  id: "dragon_bar"
+  pivot: PIVOT_E
+  parent: "hud_bg"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: -271.0
+  }
+  size {
+    x: 52.0
+    y: 52.0
+  }
+  type: TYPE_BOX
+  texture: "kcards/card_spades_K"
+  id: "icon_dragon"
+  parent: "hud_bg"
+  inherit_alpha: true
+}
+nodes {
+  type: TYPE_BOX
+  texture: "hud/proggress_bar_frame_small"
+  id: "bg"
+  parent: "hud_bg"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: -60.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "28"
+  font: "ui_bold"
+  id: "text_party"
+  pivot: PIVOT_W
+  parent: "hud_bg"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: -104.0
+    y: 2.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "30"
+  font: "ui_bold"
+  id: "text_dragon"
+  pivot: PIVOT_E
+  parent: "hud_bg"
+  inherit_alpha: true
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

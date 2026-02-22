@@ -1,0 +1,11 @@
+images {
+  image: "/assets/sky/new_castle.png"
+  pivot_y: 1.0
+}
+images {
+  image: "/assets/moon.png"
+}
+images {
+  image: "/assets/sky/sky_with_clouds.png"
+}
+extrude_borders: 2

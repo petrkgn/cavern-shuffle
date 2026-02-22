@@ -1,0 +1,22 @@
+[bootstrap]
+main_collection = /main/game.collectionc
+render = /game/render/game.renderc
+
+[script]
+shared_state = 1
+
+[display]
+width = 1024
+height = 768
+display_device_info = 0
+high_dpi = 1
+
+[android]
+input_method = HiddenInputField
+
+[project]
+title = solitaire
+
+[html5]
+scale_mode = stretch
+

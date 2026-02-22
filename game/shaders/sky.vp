@@ -1,0 +1,16 @@
+uniform highp mat4 view_proj;
+
+attribute highp vec4 position;
+attribute mediump vec2 position_local;
+attribute mediump vec2 texcoord0;
+attribute mediump vec2 sprite_size;
+
+varying mediump vec2 var_position_local;
+varying mediump vec2 var_texcoord0;
+
+void main()
+{
+	gl_Position = view_proj * vec4(position.xyz, 1.0);
+	var_position_local = (position_local + sprite_size * 0.5) / sprite_size;
+	var_texcoord0 = texcoord0;
+}

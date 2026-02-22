@@ -1,0 +1,59 @@
+images {
+  image: "/assets/effects/rogue_skill3_frame1.png"
+}
+images {
+  image: "/assets/effects/rogue_skill3_frame2.png"
+}
+images {
+  image: "/assets/effects/rogue_skill3_frame3.png"
+}
+images {
+  image: "/assets/effects/rogue_skill3_frame4.png"
+}
+images {
+  image: "/assets/effects/rogue_skill3_frame5.png"
+}
+images {
+  image: "/assets/effects/rogue_skill3_frame6.png"
+}
+images {
+  image: "/assets/effects/rogue_skill3_frame7.png"
+}
+images {
+  image: "/assets/effects/rogue_skill3_frame8.png"
+}
+images {
+  image: "/assets/effects/rogue_skill3_frame9.png"
+}
+animations {
+  id: "slash_anim"
+  images {
+    image: "/assets/effects/rogue_skill3_frame1.png"
+  }
+  images {
+    image: "/assets/effects/rogue_skill3_frame2.png"
+  }
+  images {
+    image: "/assets/effects/rogue_skill3_frame3.png"
+  }
+  images {
+    image: "/assets/effects/rogue_skill3_frame4.png"
+  }
+  images {
+    image: "/assets/effects/rogue_skill3_frame5.png"
+  }
+  images {
+    image: "/assets/effects/rogue_skill3_frame6.png"
+  }
+  images {
+    image: "/assets/effects/rogue_skill3_frame7.png"
+  }
+  images {
+    image: "/assets/effects/rogue_skill3_frame8.png"
+  }
+  images {
+    image: "/assets/effects/rogue_skill3_frame9.png"
+  }
+  fps: 9
+}
+extrude_borders: 2

@@ -1,0 +1,22 @@
+name: "background"
+tags: "background"
+vertex_program: "/game/shaders/background/background.vp"
+fragment_program: "/game/shaders/background/background.fp"
+fragment_constants {
+  name: "time"
+  type: CONSTANT_TYPE_USER
+  value {
+  }
+}
+fragment_constants {
+  name: "resolution"
+  type: CONSTANT_TYPE_USER
+  value {
+  }
+}
+fragment_constants {
+  name: "flash_params"
+  type: CONSTANT_TYPE_USER
+  value {
+  }
+}

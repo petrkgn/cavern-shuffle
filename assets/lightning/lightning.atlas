@@ -1,0 +1,30 @@
+animations {
+  id: "bolt"
+  images {
+    image: "/assets/lightning/bolt_1.png"
+    pivot_x: 0.490657
+    pivot_y: -0.471307
+  }
+  images {
+    image: "/assets/lightning/bolt_2.png"
+    pivot_x: 0.476298
+    pivot_y: -0.195618
+  }
+  images {
+    image: "/assets/lightning/bolt_3.png"
+    pivot_x: 0.446778
+    pivot_y: -0.034377
+  }
+  images {
+    image: "/assets/lightning/bolt_4.png"
+    pivot_x: 0.439789
+    pivot_y: 0.055623
+  }
+  images {
+    image: "/assets/lightning/bolt_5.png"
+    pivot_x: 0.601351
+    pivot_y: 0.064258
+  }
+  fps: 60
+}
+extrude_borders: 2

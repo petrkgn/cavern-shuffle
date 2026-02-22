@@ -1,0 +1,36 @@
+//castle.vp
+uniform mediump mat4 view_proj;
+// 
+attribute mediump vec4 position;
+attribute mediump vec2 texcoord0;
+
+varying mediump vec2 var_texcoord0;
+varying mediump vec2 var_screen_uv; // [НОВОЕ] Координаты на экране
+
+void main()
+{
+	gl_Position = view_proj * vec4(position.xyz, 1.0);
+	var_texcoord0 = texcoord0;
+
+	// Конвертируем clip-space (-1..1) в UV-space (0..1)
+	var_screen_uv = gl_Position.xy / gl_Position.w * 0.5 + 0.5;
+}
+
+
+
+// uniform highp mat4 view_proj;
+// 
+// attribute highp vec4 position;
+// attribute mediump vec2 position_local;
+// attribute mediump vec2 texcoord0;
+// attribute mediump vec2 sprite_size;
+// 
+// varying mediump vec2 var_position_local;
+// varying mediump vec2 var_texcoord0;
+// 
+// void main()
+// {
+// 	gl_Position = view_proj * vec4(position.xyz, 1.0);
+// 	var_position_local = (position_local + sprite_size * 0.5) / sprite_size;
+// 	var_texcoord0 = texcoord0;
+// }

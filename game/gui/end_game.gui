@@ -1,0 +1,57 @@
+script: "/game/scripts/end_game.gui_script"
+fonts {
+  name: "default"
+  font: "/builtins/fonts/default.font"
+}
+nodes {
+  position {
+    x: 521.0
+    y: 179.0
+  }
+  size {
+    x: 400.0
+    y: 250.0
+  }
+  color {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  type: TYPE_BOX
+  id: "box"
+  inherit_alpha: true
+  alpha: 0.4
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 520.0
+    y: 233.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "You winner!"
+  font: "default"
+  id: "result_text"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 520.0
+    y: 126.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "Play again"
+  font: "default"
+  id: "restart_button"
+  inherit_alpha: true
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

@@ -1,0 +1,13 @@
+local AnchorData = require("game.modules.anchor_data")
+
+function init(self)
+	self.node = gui.get_node("anchor_bottom")
+end
+
+function update(self, dt)
+	-- Получаем координаты узла в пикселях экрана
+	local pos = gui.get_screen_position(self.node)
+
+	-- Сохраняем в общий модуль
+	AnchorData.bottom_center = pos
+end

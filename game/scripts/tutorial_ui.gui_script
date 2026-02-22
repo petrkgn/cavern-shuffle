@@ -1,0 +1,75 @@
+-- /game/tutorial_ui.gui_script
+
+local CONST = require("game.modules.constants")
+
+-- Создаем функцию-коллбэк, которая будет отвечать за исчезновение
+local function on_appearance_done(self, node)
+	-- Эта функция будет вызвана, когда "баллон" полностью появится.
+
+	-- Создаем еще один колбэк, который сработает ПОСЛЕ исчезновения
+	local on_fade_out_done = function()
+		-- Полностью отключаем узел, чтобы он не мешал
+		gui.set_enabled(node, false)
+	end
+
+	-- Запускаем анимацию исчезновения с задержкой в 3 секунды
+	gui.animate(node, "color.w", 0, go.EASING_INSINE, 0.5, 3.0, on_fade_out_done)
+end
+
+function init(self)
+	self.root = gui.get_node("balloon_root")
+	self.art_text = gui.get_node("art_text")
+	self.help_text = gui.get_node("help_text")
+
+	-- Скрываем "баллон" при старте, чтобы не было видно краев
+	gui.set_enabled(self.root, false)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("show_balloon") then
+		-- Отменяем любую предыдущую анимацию
+		gui.cancel_animation(self.root, "color.w")
+
+		gui.set_enabled(self.root, true)
+		gui.set_text(self.art_text, message.art_text or "")
+		gui.set_text(self.help_text, message.help_text or "")
+
+		local target_pos = message.pos
+		local balloon_size = gui.get_size(self.root)
+		local screen_width = 1024
+		local screen_height = 768
+
+		-- === УМНОЕ ПОЗИЦИОНИРОВАНИЕ (ФИНАЛЬНАЯ ВЕРСИЯ) ===
+
+		-- 1. Вертикальное позиционирование (Y)
+		local balloon_y
+
+		-- Пробуем разместить НАД картой
+		local y_pos_above = target_pos.y + CONST.CARD_HEIGHT / 2 + balloon_size.y / 2 + 10
+		if y_pos_above + balloon_size.y / 2 > screen_height then
+			-- Места сверху нет, ставим ВНИЗ
+			balloon_y = target_pos.y - CONST.CARD_HEIGHT / 2 - balloon_size.y / 2 - 10
+		else
+			-- Место есть, ставим ВВЕРХ
+			balloon_y = y_pos_above
+		end
+
+		-- 2. Горизонтальное позиционирование (X)
+		local balloon_x = target_pos.x
+		if balloon_x + balloon_size.x / 2 > screen_width then
+			balloon_x = screen_width - balloon_size.x / 2 - 10
+		end
+		if balloon_x - balloon_size.x / 2 < 0 then
+			balloon_x = balloon_size.x / 2 + 10
+		end
+
+		-- Устанавливаем позицию ЦЕНТРА "баллона"
+		gui.set_position(self.root, vmath.vector3(balloon_x, balloon_y, 0))
+
+		-- === АНИМАЦИЯ ===
+		-- Мгновенно делаем невидимым
+		gui.set_color(self.root, vmath.vector4(1, 1, 1, 0))
+		-- Запускаем анимацию появления с колбэком
+		gui.animate(self.root, "color.w", 1, go.EASING_OUTSINE, 0.3, 0, on_appearance_done)
+	end
+end

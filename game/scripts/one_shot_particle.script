@@ -1,0 +1,32 @@
+-- function init(self)
+-- 	-- Запускаем частицы сразу при создании объекта
+-- 	-- Важно: компонент в magic_poof.go должен называться "particle"
+-- 	particlefx.play("#particle")
+-- end
+-- 
+-- function on_message(self, message_id, message, sender)
+-- 	-- Defold сам присылает это сообщение, когда частицы догорели
+-- 	-- if message_id == hash("particlefx_complete") then
+-- 	-- 	go.delete()
+-- 	-- end
+-- end
+
+function init(self)
+	-- Мы точно знаем, что компонент называется "particle"
+	-- Используем pcall для безопасности, чтобы не ронять игру
+	local ok, err = pcall(function()
+		particlefx.play("#particle")
+	end)
+
+	if not ok then
+		print("ERROR: one_shot_particle.script failed to find component #particle")
+		print("Detailed error:", err)
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	-- Удаляем объект только после того, как частицы закончат играть
+	if message_id == hash("particlefx_complete") then
+		go.delete()
+	end
+end

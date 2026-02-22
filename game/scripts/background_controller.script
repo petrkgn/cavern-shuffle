@@ -1,0 +1,58 @@
+-- game/scripts/background_controller.script (ИСПРАВЛЕННАЯ ВЕРСИЯ 2)
+
+-- Эта функция теперь принимает ширину и высоту окна, чтобы не вызывать запрещенных функций
+local function update_projection_and_scale(self, window_width, window_height)
+	-- 1. Получаем размеры игры из настроек проекта
+	local game_width = sys.get_config("display.width")
+	local game_height = sys.get_config("display.height")
+
+	-- 2. Рассчитываем масштабы для fit-проекции (как это делает рендер)
+	local game_aspect = game_width / game_height
+	local window_aspect = window_width / window_height
+
+	local scale
+	if game_aspect > window_aspect then
+		scale = game_width / window_width
+	else
+		scale = game_height / window_height
+	end
+
+	-- 3. Устанавливаем масштаб спрайта так, чтобы он заполнил ВЕСЬ экран,
+	-- компенсируя fit-проекцию.
+	local sprite_scale_x = window_width * scale / game_width
+	local sprite_scale_y = window_height * scale / game_height
+	go.set_scale(vmath.vector3(sprite_scale_x, sprite_scale_y, 1))
+
+	-- 4. Сохраняем реальный размер окна для передачи в шейдер
+	self.screen_width = window_width
+	self.screen_height = window_height
+end
+
+
+function init(self)
+	self.time = 0
+
+	-- "Подписываемся" на сообщения от окна
+	msg.post(".", "acquire_input_focus")
+
+	-- Вызываем функцию один раз при старте, используя размеры из game.project
+	local initial_width = sys.get_config("display.width")
+	local initial_height = sys.get_config("display.height")
+	update_projection_and_scale(self, initial_width, initial_height)
+end
+
+function update(self, dt)
+	self.time = self.time + dt
+
+
+	-- Передаем константы в шейдер фона
+	go.set("#sprite", "time", vmath.vector4(self.time, 0, 0, 0))
+end
+
+function on_message(self, message_id, message)
+	-- Ловим системное сообщение об изменении размера окна
+	if message_id == hash("window_resized") then
+		-- Пересчитываем масштаб, передавая новые размеры из сообщения
+		update_projection_and_scale(self, message.width, message.height)
+	end
+end

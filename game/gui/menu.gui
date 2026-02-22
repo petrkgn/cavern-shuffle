@@ -1,0 +1,46 @@
+script: "/game/scripts/menu.gui_script"
+fonts {
+  name: "default"
+  font: "/builtins/fonts/default.font"
+}
+nodes {
+  position {
+    x: 513.0
+    y: 382.0
+  }
+  size {
+    x: 1024.0
+    y: 768.0
+  }
+  color {
+    x: 0.0
+    y: 0.2
+    z: 0.0
+  }
+  type: TYPE_BOX
+  id: "box"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 510.0
+    y: 382.0
+  }
+  size {
+    x: 200.0
+    y: 50.0
+  }
+  color {
+    x: 0.949
+    y: 0.949
+    z: 0.949
+  }
+  type: TYPE_TEXT
+  text: "Play"
+  font: "default"
+  id: "play_button"
+  inherit_alpha: true
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

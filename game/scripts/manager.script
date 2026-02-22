@@ -1,0 +1,40 @@
+-- /main/manager.script
+
+function init(self)
+	print("Manager: Initializing. Giving focus to the menu.")
+	self.game_loaded = false
+
+	-- Передаем фокус меню сразу при старте.
+	msg.post("/menu#gui", "acquire_input_focus")
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("load_game") then
+		-- Это сообщение пришло от menu.gui_script.
+		print("Manager: Received 'load_game' from menu.")
+
+		-- Освобождаем фокус меню и выключаем его.
+		msg.post("/menu#gui", "release_input_focus")
+		msg.post("/menu#gui", "disable")
+
+		-- Начинаем загрузку игры
+		if not self.game_loaded then
+			msg.post("#game_proxy", "load")
+		end
+
+	elseif message_id == hash("proxy_loaded") then
+		-- Это сообщение пришло от прокси, когда игра загружена в память.
+		print("Manager: Proxy loaded. Enabling game world and giving it focus.")
+
+		self.game_loaded = true
+		msg.post(sender, "init")
+		msg.post(sender, "enable")
+
+		-- Эта строка важна, как мы выяснили. Она временно "забирает" фокус,
+		-- чтобы game.script мог его надежно "перехватить" в своем init().
+		msg.post(".", "acquire_input_focus")
+
+		-- Блок restart_game удален, так как он больше не используется.
+		-- proxy_unloaded тоже не нужен, так как мы не выгружаем коллекцию в рантайме.
+	end
+end

@@ -1,0 +1,26 @@
+-- sky_controller.script (Улучшенная версия)
+function init(self)
+	self.time = 0
+	-- go.set("#sprite", "castle_sampler", msg.url("/main/assets.atlas#castle"))
+end
+
+function update(self, dt)
+	self.time = self.time + dt
+
+	-- 1. Получаем размер спрайта
+	local sprite_size = go.get("#sprite", "size")
+
+	-- 2. Передаем размер спрайта в вертексный шейдер (как и раньше)
+	go.set("#sprite", "sprite_size", vmath.vector4(sprite_size.x, sprite_size.y, 0, 0))
+
+	-- 3. Передаем размер спрайта во фрагментный шейдер (как и раньше)
+	go.set("#sprite", "resolution", vmath.vector4(sprite_size.x, sprite_size.y, 0, 0))
+
+	-- 4. НОВОЕ: Передаем размер экрана в отдельный uniform
+	local screen_width = sys.get_config_number("display.width")
+	local screen_height = sys.get_config_number("display.height")
+	go.set("#sprite", "screen_size", vmath.vector4(screen_width, screen_height, 0, 0))
+
+	-- 5. Передаем время (как и раньше)
+	go.set("#sprite", "time", vmath.vector4(self.time, 0, 0, 0))
+end
