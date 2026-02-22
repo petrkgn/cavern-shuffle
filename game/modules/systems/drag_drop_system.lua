@@ -75,7 +75,7 @@ function M.update_drag(state, action)
 			local info = CardUtils.get_card_info(top_dragged_card)
 
 			if info.is_joker then
-				can_drop = string.find(target_pile.id, "inventory") and #target_pile.cards == 0
+				can_drop = (string.find(target_pile.id, "inventory") ~= nil) and #target_pile.cards == 0
 			elseif info.type == GameConfig.TYPE_ITEM and string.find(state.dragging.source_pile_id, "inventory") then
 				can_drop = RulesSystem.is_valid_item_use(state, info, target_pile)
 			elseif string.find(target_pile.id, "inventory") then
@@ -122,7 +122,7 @@ function M.end_drag(state, mouse_target)
 	if target_pile then
 		local info = CardUtils.get_card_info(top_dragged_card)
 
-		if info.is_joker and string.find(target_pile.id, "inventory") and #target_pile.cards == 0 then
+		 if info.is_joker and (string.find(target_pile.id, "inventory") ~= nil) and #target_pile.cards == 0 then
 			for _ in ipairs(dragged_cards) do table.remove(source_pile.cards) end
 			GameFlowSystem.restore_item_from_joker(state, top_dragged_card, target_pile)
 			RenderSystem.redraw_pile(source_pile)
