@@ -25,7 +25,7 @@ local function spawn_magic_poof(go_id, scale, pile_pos)
 		pos = go.get_world_position(go_id)
 	end
 	
-	factory.create("game:/game#magic_poof_factory", pos, nil, {}, scale or 1.0)
+	-- factory.create("game:/game#magic_poof_factory", pos, nil, {}, scale or 1.0)
 end
 
 -- Вспомогательная функция создания карт-заполнителей (Сокровище / Иллюзия)
