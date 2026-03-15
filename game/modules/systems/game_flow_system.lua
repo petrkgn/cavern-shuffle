@@ -103,7 +103,7 @@ function M.execute_short_rest_chain(state, item_card_data, source_slot_id, explo
 
 		-- 6. Запускаем перетасовку через небольшую паузу
 		timer.delay(0.5, false, function()
-			M.perform_shuffle_logic(state)
+			M.use_short_rest(state)
 		end)
 	end, go.EASING_OUTSINE)
 
@@ -136,39 +136,6 @@ function M.restore_item_from_joker(state, joker_card, target_pile)
 	table.insert(target_pile.cards, joker_card)
 
 	RenderSystem.redraw_pile(target_pile)
-end
-
--- Логика перетасовки (перенесено из старого use_short_rest для чистоты)
-function M.perform_shuffle_logic(state)
-	local explore_pile = state.piles.explore
-	local talon_pile = state.piles.talon
-	local discard_pile = state.piles.discard
-
-	-- Talon -> Discard
-	for _, card in ipairs(talon_pile.cards) do
-		card.is_hidden = true
-		table.insert(discard_pile.cards, card)
-		RenderSystem.move_card(card, discard_pile, #discard_pile.cards, 0, function()
-			if card.go_id then msg.post(card.go_id, "hide") end
-		end)
-	end
-	talon_pile.cards = {}
-
-	-- Двойной перелет для эффекта тасовки
-	timer.delay(0.3, false, function()
-		local total = #discard_pile.cards
-		for i = total, 1, -1 do
-			local card = table.remove(discard_pile.cards, i)
-			table.insert(explore_pile.cards, card)
-			RenderSystem.move_card(card, explore_pile, #explore_pile.cards, (total-i)*0.02)
-		end
-
-		timer.delay(0.5, false, function()
-			CardUtils.shuffle(explore_pile.cards)
-			RenderSystem.update_explore_pile_sprite(explore_pile)
-			print("Shuffle complete!")
-		end)
-	end)
 end
 
 
@@ -542,10 +509,7 @@ return true
 end
 
 -- Эффект "Короткого отдыха": перемешивает колоду после трансформации в Джокер
-function M.use_short_rest(state, item_card_data, source_slot_id)
-    -- ★★★ ВАЖНО: ЭТА ФУНКЦИЯ БОЛЬШЕ НЕ ЗАПУСКАЕТ АНИМАЦИЮ ПОЛЁТА! ★★★
-    -- Она вызывается ТОЛЬКО после того, как карта уже вернулась в слот и трансформировалась в Джокер.
-
+function M.use_short_rest(state)
     print("Short Rest transformed into Joker. Starting shuffle sequence...")
     local explore_pile = state.piles.explore
     local talon_pile = state.piles.talon
