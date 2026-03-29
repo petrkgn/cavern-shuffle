@@ -224,6 +224,9 @@ function M.handle_explore_click(state)
 	local talon_pile = state.piles.talon
 	local discard_pile = state.piles.discard
 
+	-- Блокируем повторные клики во время анимации
+	explore_pile.can_use = false
+
 	-- 1. Сначала убираем старые карты из Талона в Сброс
 	if #talon_pile.cards > 0 then
 		for i, card in ipairs(talon_pile.cards) do
@@ -263,6 +266,8 @@ function M.handle_explore_click(state)
 				if i == #cards_to_add_to_talon then
 					on_complete = function()
 						print("ANIMATION COMPLETE: Triggering check_talon now...") -- << ОТЛАДКА
+						-- Разблокируем стопку после завершения анимации
+						explore_pile.can_use = true
 						M.check_talon(state)
 					end
 				end
@@ -280,6 +285,10 @@ function M.handle_explore_click(state)
 				table.insert(explore_pile.cards, card)
 				RenderSystem.move_card(card, explore_pile, #explore_pile.cards, (total_cards - i) * 0.02, nil, go.EASING_INOUTSINE, discard_pile)
 			end
+			-- Разблокируем стопку после завершения анимации переброса
+			timer.delay(total_cards * 0.02 + 0.1, false, function()
+				explore_pile.can_use = true
+			end)
 		end
 
 		timer.delay(0.1, false, function()

@@ -113,6 +113,11 @@ function M.on_input(state, action_id, action)
 					local target_pile = state.click.target.pile
 
 					if target_pile.id == "explore" then
+						-- Блокируем клик, если стопка sedang анимации
+						if not target_pile.can_use then
+							print("InputSystem: Explore pile is animating, ignoring click")
+							return
+						end
 						if not state.is_dealt then
 							print("InputSystem: Dealing cards for the first time...")
 							GameFlowSystem.deal(state)

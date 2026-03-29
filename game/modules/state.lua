@@ -68,6 +68,7 @@ function M.init()
 
 -- Explore (создается с плейсхолдером рубашки)
 M.data.piles.explore = Pile.new({ id = "explore", pos = vmath.vector3(CONST.COLUMN_X[1], CONST.ROW_Y[1], 0), layout = Pile.LAYOUT_STACK, placeholder_sprite = "card_back" })
+M.data.piles.explore.can_use = true
 
 -- Inventory (создаются с персональными плейсхолдерами)
 local inventory_placeholders = { "item_placeholder_1", "item_placeholder_2", "item_placeholder_3", "item_placeholder_4" }
@@ -133,6 +134,9 @@ function M.reset(state_data)
 	state_data.win_minotaur_card = nil
 	state_data.temporary_power_buff = { suit = nil, amount = 0 }
 	state_data.is_restarting = false -- "Размораживаем" игру
+	
+	-- Сбрасываем флаг блокировки explore pile
+	state_data.piles.explore.can_use = true
 
 	-- 4. Заново создаем колоду
 	state_data.piles.explore.cards = CardUtils.create_standard_deck()
