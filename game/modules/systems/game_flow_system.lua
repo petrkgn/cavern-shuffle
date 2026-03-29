@@ -8,25 +8,6 @@ local CONST = require("game.modules.constants")
 
 local M = {}
 
--- === ВСПОМОГАТЕЛЬНЫЕ ВИЗУАЛЬНЫЕ ФУНКЦИИ ===
-
--- Спавн магического эффекта в мировых координатах объекта
-local function spawn_magic_poof(go_id, scale, pile_pos)
-	if not go_id then return end
-	if not go.exists(go_id) then return end
-	
-	-- Используем позицию стопки, если передана, иначе позицию GO
-	local pos
-	if pile_pos then
-		-- Z=0.2: ближе к камере чем карты (карты Z=0.01-0.95, но 0.95 дальше от камеры!)
-		-- В Defold: меньший Z = ближе к камере = поверх других объектов
-		pos = vmath.vector3(pile_pos.x, pile_pos.y, 0.2)
-	else
-		pos = go.get_world_position(go_id)
-	end
-	
-	-- factory.create("game:/game#magic_poof_factory", pos, nil, {}, scale or 1.0)
-end
 
 -- Вспомогательная функция создания карт-заполнителей (Сокровище / Иллюзия)
 local function create_placeholder_card(state, target_pile, is_dungeon_pile)
@@ -97,20 +78,16 @@ function M.execute_short_rest_chain(state, item_card_data, source_slot_id, explo
 		table.insert(target_slot.cards, item_card_data)
 
 		RenderSystem.redraw_pile(target_slot)
-
-		-- 5. Запускаем эффект частиц (используем позицию стопки)
-		spawn_magic_poof(go_id, 1.2, target_slot.pos)
-
 		-- 6. Запускаем перетасовку через небольшую паузу
 		timer.delay(0.5, false, function()
 			M.use_short_rest(state)
 		end)
 	end, go.EASING_OUTSINE)
 
-	-- 2. В середине полета запускаем эффект переворота
+	-- 2. В середине полета запускаем эффект переворота (с эффектом частиц)
 	timer.delay(0.15, false, function()
 		if go.exists(go_id) then
-			msg.post(go_id, "transform_from", { anim = hash("item_joker") })
+			msg.post(go_id, "transform_from", { anim = hash("item_joker"), spawn_poof = true })
 		end
 	end)
 end
@@ -125,9 +102,8 @@ function M.restore_item_from_joker(state, joker_card, target_pile)
 
 	-- Визуал трансформации ПЕРЕД сменой данных
 	local target_anim = hash("card_" .. suit .. "_" .. face)
-	-- Передаем spawn_poof=false, так как эффект создается отдельно через spawn_magic_poof
-	msg.post(joker_card.go_id, "transform_from", { anim = target_anim, spawn_poof = false })
-	spawn_magic_poof(joker_card.go_id, 1.0, target_pile.pos)
+	-- Эффект частиц вызывается в card.script при перевороте карты (spawn_poof = true)
+	msg.post(joker_card.go_id, "transform_from", { anim = target_anim, spawn_poof = true })
 
 	-- Обновляем данные
 	joker_card.face = face
