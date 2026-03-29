@@ -75,7 +75,7 @@ function M.use_item(state, item_card_data, target_pile, source_slot_id)
 	elseif item_info.name == "Potion of Strength" then
 		return M.use_potion_of_strength(state, target_pile)
 	elseif item_info.name == "Treasure" then
-		return create_placeholder_card(state, target_pile, false)
+		return M.use_treasure(state, target_pile, source_slot_id)
 	elseif item_info.name == "Minor Illusion" then
 		return create_placeholder_card(state, target_pile, true)
 	end
@@ -514,6 +514,24 @@ local suit = target_party_pile.cards[#target_party_pile.cards].suit
 print("Using Potion of Strength on suit: " .. suit)
 state.temporary_power_buff.suit = suit
 state.temporary_power_buff.amount = 5
+return true
+end
+
+-- Использование сокровища: создаёт карту-заполнитель и повышает уровень отряда
+function M.use_treasure(state, target_party_pile, source_slot_id)
+if #target_party_pile.cards == 0 then return false end
+
+-- Создаём карту-заполнитель (новая карта с повышенным значением)
+local created = create_placeholder_card(state, target_party_pile, false)
+if not created then return false end
+
+-- Получаем созданную карту
+local new_card = target_party_pile.cards[#target_party_pile.cards]
+if not new_card then return false end
+
+-- Отправляем сообщение о повышении уровня — это запустит перемещение дракона
+msg.post("game:/game#game_script", "adventurer_leveled_up", { card = new_card })
+
 return true
 end
 
