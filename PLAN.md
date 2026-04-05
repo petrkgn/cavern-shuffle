@@ -74,7 +74,7 @@
 
 ### Performance
 
-8. - [ ] **[PERFORMANCE] Оптимизировать анимации ударов карт о дракона в хороводе**
+9. - [ ] **[PERFORMANCE] Оптимизировать анимации ударов карт о дракона в хороводе**
   
    **Файлы:** `game/modules/systems/render_system.lua`, `game/scripts/card.script`
   

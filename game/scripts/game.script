@@ -20,6 +20,9 @@ local Coords = require("game.modules.coords")
 
 local function update_score_ui(self)
 	local current_power = self.state.party_power
+	-- Добавляем активный бафф зелья к отображаемому значению
+	local buff_amount = self.state.temporary_power_buff.amount or 0
+	local display_power = current_power + buff_amount
 
 	-- Проверяем, есть ли карты в стопках отряда.
 	-- Если карт > 0, значит Туз (или больше) уже там.
@@ -32,8 +35,8 @@ local function update_score_ui(self)
 	}
 
 	-- Шлем новое расширенное сообщение "update_hud"
-	msg.post("/game_ui#game_ui", "update_hud", { 
-		power = current_power, 
+	msg.post("/game_ui#game_ui", "update_hud", {
+		power = display_power,
 		target = 30,
 		suits = active_suits,
 		dragon_hp = 30 -- Пока статика, потом привяжем к логике
@@ -78,6 +81,10 @@ function on_message(self, message_id, message, sender)
 		print(">>>> 1. game.script: Received 'adventurer_leveled_up'!")
 		GameFlowSystem.on_adventurer_leveled_up(self.state, message.card)
 		-- Обновляем бар при получении уровня
+		update_score_ui(self)
+
+	elseif message_id == hash("potion_used") then
+		print(">>>> 1. game.script: Received 'potion_used'!")
 		update_score_ui(self)
 
 	elseif message_id == hash("game_won") then

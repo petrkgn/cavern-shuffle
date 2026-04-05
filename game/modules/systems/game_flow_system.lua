@@ -490,6 +490,10 @@ local suit = target_party_pile.cards[#target_party_pile.cards].suit
 print("Using Potion of Strength on suit: " .. suit)
 state.temporary_power_buff.suit = suit
 state.temporary_power_buff.amount = 5
+
+-- Обновляем UI прогрессбара с учётом баффа
+msg.post("game:/game#game_script", "potion_used")
+
 return true
 end
 
