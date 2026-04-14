@@ -5,6 +5,7 @@ local InputSystem = require("game.modules.systems.input_system")
 local RenderSystem = require("game.modules.systems.render_system")
 local GameFlowSystem = require("game.modules.systems.game_flow_system")
 local TutorialSystem = require("game.modules.systems.tutorial_system")
+local DebugUtils = require("game.debug.debug_utils")
 
 local Coords = require("game.modules.coords")
 
@@ -45,14 +46,23 @@ end
 
 function init(self)
 	print("My exact address is:", msg.url())
-	msg.post("@render:", "use_fixed_fit_projection", { near = -1, far = 1 }) 
+	msg.post("@render:", "use_fixed_fit_projection", { near = -1, far = 1 })
 	msg.post("@render:", "listen_for_resolution")
 	math.randomseed(socket.gettime())
 
 	State.init()
 	self.state = State.data
 
-	RenderSystem.update_explore_pile_sprite(self.state.piles.explore)
+	-- === DEBUG: Настройка специальной раскладки для тестирования ===
+	if DebugUtils.DEBUG_MODE then
+		DebugUtils.setup_debug_deal(self.state)
+		-- Обновляем спрайт колоды после настройки
+		RenderSystem.update_explore_pile_sprite(self.state.piles.explore)
+	else
+		-- Обычная инициализация
+		RenderSystem.update_explore_pile_sprite(self.state.piles.explore)
+	end
+	-- === КОНЕЦ DEBUG БЛОКА ===
 
 	msg.post("/end_game_ui", "disable")
 	msg.post(".", "acquire_input_focus")
