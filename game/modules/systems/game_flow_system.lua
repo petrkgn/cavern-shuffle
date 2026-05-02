@@ -512,6 +512,10 @@ if not new_card then return false end
 -- Отправляем сообщение о повышении уровня — это запустит перемещение дракона
 msg.post("game:/game#game_script", "adventurer_leveled_up", { card = new_card })
 
+-- После создания карты-заполнителя проверяем открытые карты в подземелье на дубликаты
+-- (кроме столбца, где находится Минотавр, потому что там карты закрыты)
+M.check_open_dungeon_duplicates(state)
+
 return true
 end
 
@@ -691,6 +695,30 @@ function M.check_for_duplicate(state, card_to_check, source_pile)
 	end
 
 	return false -- Это была обычная карта
+end
+
+-- Проверка открытых карт в подземелье на дубликаты (кроме столбца с Минотавром)
+function M.check_open_dungeon_duplicates(state)
+	local minotaur_column = state.minotaur_pos
+	print("Checking open dungeon duplicates, excluding column " .. minotaur_column)
+
+	for i = 1, 7 do
+		if i == minotaur_column then
+			-- Карты в этом столбце закрыты Минотавром, не проверяем
+			-- continue не существует в Lua, просто пропускаем
+		else
+			local pile = state.piles["dungeon_" .. i]
+			if pile and #pile.cards > 0 then
+				-- Проверяем только открытые карты (верхняя карта в столбце всегда открыта?)
+				-- В подземелье карты скрыты, кроме верхней. Поэтому проверяем верхнюю карту.
+				local top_card = pile.cards[#pile.cards]
+				if top_card and not top_card.is_hidden then
+					-- Проверяем дубликат
+					M.check_for_duplicate(state, top_card, pile)
+				end
+			end
+		end
+	end
 end
 
 
