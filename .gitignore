@@ -21,4 +21,6 @@ desktop.ini
 # Private keys (never commit these!)
 manifest.private.der
 manifest.private.key
-*.private.*
+*.private.*.env
+.aider*
+.env
