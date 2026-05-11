@@ -53,16 +53,19 @@ function init(self)
 	State.init()
 	self.state = State.data
 
-	-- === DEBUG: Настройка специальной раскладки для тестирования ===
+	-- Обычная инициализация
+	RenderSystem.update_explore_pile_sprite(self.state.piles.explore)
+
+	-- === DEBUG: Информационное сообщение при включённом режиме ===
 	if DebugUtils.DEBUG_MODE then
-		DebugUtils.setup_debug_deal(self.state)
-		-- Обновляем спрайт колоды после настройки
-		RenderSystem.update_explore_pile_sprite(self.state.piles.explore)
-	else
-		-- Обычная инициализация
-		RenderSystem.update_explore_pile_sprite(self.state.piles.explore)
+		print("")
+		print("=============================================")
+		print("===         DEBUG MODE ENABLED            ===")
+		print("===  F7: Select debug function            ===")
+		print("===  F2: Set up debug layout              ===")
+		print("===  Click Explore: Run debug action      ===")
+		print("=============================================")
 	end
-	-- === КОНЕЦ DEBUG БЛОКА ===
 
 	msg.post("/end_game_ui", "disable")
 	msg.post(".", "acquire_input_focus")
@@ -162,6 +165,19 @@ function on_message(self, message_id, message, sender)
 end
 
 function on_input(self, action_id, action)
-	-- Мы убрали print для чистоты консоли, но он тут работает
+	-- === DEBUG: Обработка клавиш дебага ===
+	if action_id == hash("debug_select") then
+		if action.pressed and DebugUtils.DEBUG_MODE then
+			DebugUtils.select_next()
+		end
+		return
+	elseif action_id == hash("debug_setup") then
+		if action.pressed and DebugUtils.DEBUG_MODE then
+			DebugUtils.run_setup(self.state)
+		end
+		return
+	end
+
+	-- Обычная обработка ввода
 	InputSystem.on_input(self.state, action_id, action)
 end

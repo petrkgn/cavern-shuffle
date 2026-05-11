@@ -6,6 +6,14 @@ key_trigger {
   input: KEY_R
   action: "redeal"
 }
+key_trigger {
+  input: KEY_F7
+  action: "debug_select"
+}
+key_trigger {
+  input: KEY_F2
+  action: "debug_setup"
+}
 mouse_trigger {
   input: MOUSE_BUTTON_1
   action: "touch"

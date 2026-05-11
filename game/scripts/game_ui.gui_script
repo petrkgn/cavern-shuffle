@@ -40,6 +40,8 @@ function on_input(self, action_id, action)
 	if self.is_game_over then return end
 
 	if action.pressed then
+		-- Клавиатурные события (F7, F2, etc.) не имеют координат
+		if not action.x or not action.y then return end
 		local node = gui.get_node("check_moves_button")
 		if gui.pick_node(node, action.x, action.y) then
 			print("Check moves button clicked.")
