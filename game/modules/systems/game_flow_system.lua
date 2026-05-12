@@ -111,6 +111,11 @@ function M.restore_item_from_joker(state, joker_card, target_pile)
 	joker_card.is_wildcard = false
 	table.insert(target_pile.cards, joker_card)
 
+	-- ★★★ ВАЖНО: Помечаем карту как созданную, чтобы проверка дубликатов работала ★★★
+	-- Это особенно критично для сокровищ (Treasure), так как при их повторном использовании
+	-- должна срабатывать логика удаления дубликатов из подземелья.
+	state.created_cards[restored_key] = true
+
 	RenderSystem.redraw_pile(target_pile)
 end
 

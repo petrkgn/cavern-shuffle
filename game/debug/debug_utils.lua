@@ -68,13 +68,15 @@ local State = require("game.modules.state")
 
 -- Создаёт GO для карты и возвращает go_id
 local function create_card_go(card_data, pos, is_hidden)
+	-- Для джокера (suit = nil) используем пустую строку
+	local suit_hash = card_data.suit and hash(card_data.suit) or hash("")
 	card_data.go_id = factory.create(
 		"#card_factory",
 		pos,
 		nil,
 		{
 			face = hash(card_data.face),
-			suit = hash(card_data.suit),
+			suit = suit_hash,
 			hidden = is_hidden and hash("hidden") or hash("")
 		},
 		CONST.CARD_SCALE
@@ -452,6 +454,73 @@ M.register_function(
 		state.is_dealt = true
 		-- Блокируем explore — обычный deal не должен сработать при клике
 		state.piles.explore.can_use = false
+	end
+)
+
+-- ---------------------------------------------------------------------------
+-- #5: Sequential Treasure Uses with Joker Restore
+-- Проверка двух последовательных использований Treasure (оригинал + от джокера).
+-- Состояние: inventory_1 = Treasure (оригинал), inventory_2 = Joker,
+-- dungeon_3 = 2_hearts, dungeon_4 = 3_hearts, party_1 = A_hearts.
+-- Этапы:
+--   1. Использовать оригинальное Treasure на A_hearts → создаётся 2_hearts → 2_hearts в dungeon_3 улетает
+--   2. Восстановить Joker в Treasure (inventory_2)
+--   3. Использовать восстановленное Treasure на 2_hearts (в party) → создаётся 3_hearts
+--   4. check_open_dungeon_duplicates должен найти 3_hearts в dungeon_4 → улетает
+-- ---------------------------------------------------------------------------
+M.register_function(
+	"Sequential Treasure Uses",
+	"Проверка двух последовательных использований Treasure (оригинал + от джокера).\n"
+	.. "  Состояние: inventory_1 = Joker, inventory_2 = Treasure, dungeon_3 = 2_hearts, dungeon_4 = 3_hearts, party_1 = A_hearts.\n"
+	.. "  1. Использовать Treasure (оригинал) на A_hearts → 2_hearts в dungeon_3 улетает\n"
+	.. "  2. Восстановить Joker в Treasure → использовать на 2_hearts (party) → 3_hearts в dungeon_4 улетает.",
+	function(state)
+		-- 1. Joker в inventory_1 (лицом вверх)
+		local joker = { face = "joker", suit = nil, is_hidden = false, is_wildcard = true }
+		table.insert(state.piles.inventory_1.cards, joker)
+		local inv1_pos = state.piles.inventory_1.pos
+		create_card_go(joker, vmath.vector3(inv1_pos.x, inv1_pos.y, 0.01), false)
+
+		-- 2. Оригинальное Treasure в inventory_2 (лицом вверх)
+		local treasure1 = { face = "J", suit = "hearts", is_hidden = false }
+		table.insert(state.piles.inventory_2.cards, treasure1)
+		local inv2_pos = state.piles.inventory_2.pos
+		create_card_go(treasure1, vmath.vector3(inv2_pos.x, inv2_pos.y, 0.01), false)
+
+		-- 3. dungeon_3: 2_hearts (открыта) — дубликат для первого использования
+		local two_hearts = { face = "02", suit = "hearts", is_hidden = false }
+		table.insert(state.piles.dungeon_3.cards, two_hearts)
+		local dung3_pos = state.piles.dungeon_3.pos
+		create_card_go(two_hearts, vmath.vector3(dung3_pos.x, dung3_pos.y, 0.01), false)
+
+		-- 4. dungeon_4: 3_hearts (открыта) — dубликат для второго использования
+		local three_hearts = { face = "03", suit = "hearts", is_hidden = false }
+		table.insert(state.piles.dungeon_4.cards, three_hearts)
+		local dung4_pos = state.piles.dungeon_4.pos
+		create_card_go(three_hearts, vmath.vector3(dung4_pos.x, dung4_pos.y, 0.01), false)
+
+		-- 5. party_1: A_hearts — на неё будет использовано первое сокровище
+		local ace_hearts = { face = "A", suit = "hearts", is_hidden = false }
+		table.insert(state.piles.party_1.cards, ace_hearts)
+		local party1_pos = state.piles.party_1.pos
+		create_card_go(ace_hearts, vmath.vector3(party1_pos.x, party1_pos.y, 0.01), false)
+
+		state.party_levels.hearts = 1
+		state.party_power = 1
+
+		-- 6. НЕ помечаем карты как дубликаты! Они будут помечены автоматически
+		-- когда игрок использует Treasure через create_placeholder_card.
+		print("DEBUG: 2_hearts and 3_hearts are normal cards in dungeon. They will be marked as duplicates when Treasure is used.")
+
+		state.is_dealt = true
+		state.piles.explore.can_use = false
+
+		print("DEBUG: Setup complete!")
+		print("DEBUG: Step 1: Use Treasure (J_hearts) from inventory_2 on A_hearts in party_1.")
+		print("DEBUG:        Expected: 2_hearts in dungeon_3 should fly to graveyard.")
+		print("DEBUG: Step 2: Restore Joker to Treasure (use Joker from inventory_1 on empty explore).")
+		print("DEBUG: Step 3: Use restored Treasure on 2_hearts in party_1.")
+		print("DEBUG:        Expected: 3_hearts in dungeon_4 should fly to graveyard.")
 	end
 )
 
