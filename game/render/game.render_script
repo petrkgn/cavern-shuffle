@@ -73,17 +73,33 @@ local function update_camera(camera, state)
 	end
 end
 
+local function notify_listeners(self)
+	local win_w = render.get_window_width()
+	local win_h = render.get_window_height()
+	local game_w = render.get_width()
+	local game_h = render.get_height()
+
+	for url, _ in pairs(self.listeners) do
+		msg.post(url, "set_resolution", {
+			win_w = win_w, win_h = win_h,
+			game_w = game_w, game_h = game_h
+		})
+	end
+end
+
 local function update_state(state)
 	state.window_width = render.get_window_width()
 	state.window_height = render.get_window_height()
 	state.valid = state.window_width > 0 and state.window_height > 0
 	if not state.valid then
-		return false
+		return false, false
 	end
-	-- Make sure state updated only once when resize window
-	if state.window_width == state.prev_window_width and state.window_height == state.prev_window_height then
-		return true
+	
+	local changed = false
+	if state.window_width ~= state.prev_window_width or state.window_height ~= state.prev_window_height then
+		changed = true
 	end
+	
 	state.prev_window_width = state.window_width
 	state.prev_window_height = state.window_height
 	state.width = render.get_width()
@@ -91,7 +107,7 @@ local function update_state(state)
 	for _, camera in pairs(state.cameras) do
 		update_camera(camera, state)
 	end
-	return true
+	return true, changed
 end
 
 local function init_camera(camera, projection_fn, near, far, zoom)
@@ -196,10 +212,13 @@ end
 
 function update(self)
 	local state = self.state
-	if not state.valid then
-		if not update_state(state) then
-			return
-		end
+	local valid, changed = update_state(state)
+	if not valid then
+		return
+	end
+	
+	if changed then
+		notify_listeners(self)
 	end
 
 	local predicates = self.predicates
@@ -258,26 +277,6 @@ function update(self)
 	render.draw(predicates.debug_text, camera_gui.options)
 	render.disable_state(graphics.STATE_STENCIL_TEST)
 	render.disable_state(graphics.STATE_BLEND)
-
-	local win_w = render.get_window_width()
-	local win_h = render.get_window_height()
-	local game_w = render.get_width()
-	local game_h = render.get_height()
-
-	for url, _ in pairs(self.listeners) do
-		msg.post(url, "set_resolution", { 
-			win_w = win_w, win_h = win_h,
-			game_w = game_w, game_h = game_h
-		})
-	end
-
-	-- local width = render.get_window_width()
-	-- local height = render.get_window_height()
-
-	-- Рассылаем сообщение всем подписчикам
-	-- for url, _ in pairs(self.listeners) do
-	-- 	msg.post(url, "set_resolution", { width = width, height = height })
-	-- end
 end
 
 function on_message(self, message_id, message, sender)
@@ -287,6 +286,8 @@ function on_message(self, message_id, message, sender)
 	if message_id == hash("listen_for_resolution") then
 		-- Используем параметр "sender" напрямую
 		self.listeners[sender] = true
+		-- Сразу отправляем актуальное разрешение
+		notify_listeners(self)
 	elseif message_id == hash("stop_listening_for_resolution") then
 		-- И здесь тоже
 		self.listeners[sender] = nil
@@ -295,7 +296,10 @@ function on_message(self, message_id, message, sender)
 	if message_id == MSG_CLEAR_COLOR then
 		update_clear_color(state, message.color)
 	elseif message_id == MSG_WINDOW_RESIZED then
-		update_state(state)
+		local _, changed = update_state(state)
+		if changed then
+			notify_listeners(self)
+		end
 	elseif message_id == MSG_SET_VIEW_PROJ then
 		camera.view = message.view
 		self.camera_projection = message.projection or vmath.matrix4()
