@@ -17,18 +17,22 @@ local function prepare_balloon_message(target_go, text_config)
 	return {
 		pos = target_position,
 		art_text = phrase.art,
-		help_text = phrase.help
+		help_text = phrase.help,
 	}
 end
 
 -- Функция для обработки "чистого клика"
 function M.get_click_hint(state, target)
-	if not target or not target.pile then return nil end
+	if not target or not target.pile then
+		return nil
+	end
 
 	if target.card_index > 0 then
 		-- Клик по КАРТЕ
 		local card = target.pile.cards[target.card_index]
-		if not card then return nil end -- Защита на всякий случай
+		if not card then
+			return nil
+		end -- Защита на всякий случай
 
 		local info = CardUtils.get_card_info(card)
 
@@ -69,6 +73,5 @@ function M.get_drag_fail_hint(card_data, source_pile)
 
 	return prepare_balloon_message(card_data.go_id, text_table)
 end
-
 
 return M

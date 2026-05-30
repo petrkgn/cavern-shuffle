@@ -26,7 +26,7 @@ local function find_target_at(state, x, y)
 			-- Если стопка пуста, ее область клика - это простой прямоугольник
 			if #pile.cards == 0 then
 				if y > pile.pos.y - card_h_half and y < pile.pos.y + card_h_half then
-					return {pile = pile, card_index = 0}
+					return { pile = pile, card_index = 0 }
 				end
 			else
 				-- Проверяем разные типы стопок
@@ -35,22 +35,21 @@ local function find_target_at(state, x, y)
 						local card_pos_y = pile.pos.y - (i - 1) * CONST.OVERLAP_OFFSET
 						local is_last_card = (i == #pile.cards)
 						local top_boundary = card_pos_y + card_h_half
-						local bottom_boundary =
-						is_last_card and (card_pos_y - card_h_half) or
-						(card_pos_y + card_h_half - CONST.OVERLAP_OFFSET)
+						local bottom_boundary = is_last_card and (card_pos_y - card_h_half)
+							or (card_pos_y + card_h_half - CONST.OVERLAP_OFFSET)
 
 						if y < top_boundary and y > bottom_boundary then
-							return {pile = pile, card_index = i}
+							return { pile = pile, card_index = i }
 						end
 					end
 				elseif pile.layout == "stack_offset" then -- Talon
 					local top_card_index = #pile.cards
 					if y > pile.pos.y - card_h_half and y < pile.pos.y + card_h_half then
-						return {pile = pile, card_index = top_card_index}
+						return { pile = pile, card_index = top_card_index }
 					end
 				elseif pile.layout == "stack" then -- Explore, Party, Inventory, Discard
 					if y > pile.pos.y - card_h_half and y < pile.pos.y + card_h_half then
-						return {pile = pile, card_index = #pile.cards}
+						return { pile = pile, card_index = #pile.cards }
 					end
 				end
 			end
@@ -59,7 +58,6 @@ local function find_target_at(state, x, y)
 
 	return nil -- Ничего не найдено
 end
-
 
 function M.on_input(state, action_id, action)
 	if state.is_won or state.is_restarting then
@@ -83,13 +81,13 @@ function M.on_input(state, action_id, action)
 			dx = action.dx,
 			dy = action.dy,
 			screen_x = action.screen_x,
-			screen_y = action.screen_y
+			screen_y = action.screen_y,
 		}
 	end
 
 	-- --- ОСНОВНАЯ ЛОГИКА (использует corrected_action) ---
 
-	state.click = state.click or {is_down = false, target = nil, has_moved = false}
+	state.click = state.click or { is_down = false, target = nil, has_moved = false }
 
 	if action_id == hash("touch") then
 		if corrected_action.pressed then
@@ -104,9 +102,9 @@ function M.on_input(state, action_id, action)
 				elseif state.click.target and not state.click.has_moved then
 					print("InputSystem: Pure click detected on pile:", state.click.target.pile.id)
 
-					msg.post("/game#game_script", "pure_click", { 
-						pile_id = state.click.target.pile.id, 
-						card_index = state.click.target.card_index 
+					msg.post("/game#game_script", "pure_click", {
+						pile_id = state.click.target.pile.id,
+						card_index = state.click.target.card_index,
 					})
 
 					-- V-- НОВАЯ ЛОГИКА ДЛЯ КЛИКОВ ПО КАРТАМ --V
@@ -136,29 +134,32 @@ function M.on_input(state, action_id, action)
 					end
 				end
 			end
-			state.click = {is_down = false, target = nil, has_moved = false}
+			state.click = { is_down = false, target = nil, has_moved = false }
 		elseif state.click.is_down and not state.click.has_moved then
-			if (math.abs(corrected_action.dx) > 5 or math.abs(corrected_action.dy) > 5) and #state.dragging.cards == 0 then
+			if
+				(math.abs(corrected_action.dx) > 5 or math.abs(corrected_action.dy) > 5)
+				and #state.dragging.cards == 0
+			then
 				state.click.has_moved = true
 				if state.click.target and state.click.target.card_index > 0 then
 					DragDropSystem.start_drag(
-					state,
-					state.click.target.pile,
-					state.click.target.card_index,
-					corrected_action
-				)
+						state,
+						state.click.target.pile,
+						state.click.target.card_index,
+						corrected_action
+					)
+				end
 			end
 		end
 	end
-end
 
-if state.dragging and #state.dragging.cards > 0 then
-	DragDropSystem.update_drag(state, corrected_action)
-end
+	if state.dragging and #state.dragging.cards > 0 then
+		DragDropSystem.update_drag(state, corrected_action)
+	end
 
-if corrected_action.released and (not state.dragging or #state.dragging.cards == 0) then
-	GameFlowSystem.check_win(state)
-end
+	if corrected_action.released and (not state.dragging or #state.dragging.cards == 0) then
+		GameFlowSystem.check_win(state)
+	end
 end
 
 return M

@@ -12,7 +12,9 @@ local M = {}
 
 -- Вспомогательная функция: Выбираем, ЧТО именно подсвечивать в стопке
 local function get_highlight_target_go(pile)
-	if not pile then return nil end
+	if not pile then
+		return nil
+	end
 	if #pile.cards > 0 then
 		return pile.cards[#pile.cards].go_id
 	end
@@ -20,14 +22,22 @@ local function get_highlight_target_go(pile)
 end
 
 function M.start_drag(state, source_pile, card_index, action)
-	if card_index == 0 then return end
-	if string.find(source_pile.id, "party") then return end
+	if card_index == 0 then
+		return
+	end
+	if string.find(source_pile.id, "party") then
+		return
+	end
 
 	local card = source_pile.cards[card_index]
 	local info = CardUtils.get_card_info(card)
 
-	if not info.is_joker and not RulesSystem.is_drag_allowed(source_pile, card_index) then return end
-	if source_pile.id == "talon" and card_index ~= #source_pile.cards then return end
+	if not info.is_joker and not RulesSystem.is_drag_allowed(source_pile, card_index) then
+		return
+	end
+	if source_pile.id == "talon" and card_index ~= #source_pile.cards then
+		return
+	end
 
 	local cards_to_drag = {}
 	for i = card_index, #source_pile.cards do
@@ -50,13 +60,15 @@ function M.start_drag(state, source_pile, card_index, action)
 end
 
 function M.update_drag(state, action)
-	if #state.dragging.cards == 0 then return end
+	if #state.dragging.cards == 0 then
+		return
+	end
 
 	for i, card in ipairs(state.dragging.cards) do
 		if card.go_id then
 			local new_pos = vmath.vector3(
 				action.x + state.dragging.offset.x,
-				action.y + state.dragging.offset.y - ((i-1) * CONST.OVERLAP_OFFSET),
+				action.y + state.dragging.offset.y - ((i - 1) * CONST.OVERLAP_OFFSET),
 				0.9 + i * 0.01
 			)
 			go.set_position(new_pos, card.go_id)
@@ -86,7 +98,9 @@ function M.update_drag(state, action)
 				can_drop = RulesSystem.is_valid_dungeon_move(top_dragged_card, target_pile.cards[#target_pile.cards])
 			end
 
-			if can_drop then candidate_go_id = get_highlight_target_go(target_pile) end
+			if can_drop then
+				candidate_go_id = get_highlight_target_go(target_pile)
+			end
 		end
 	end
 
@@ -94,13 +108,17 @@ function M.update_drag(state, action)
 		if state.dragging.hovered_go_id and go.exists(state.dragging.hovered_go_id) then
 			msg.post(state.dragging.hovered_go_id, "highlight_off")
 		end
-		if candidate_go_id then msg.post(candidate_go_id, "highlight_on") end
+		if candidate_go_id then
+			msg.post(candidate_go_id, "highlight_on")
+		end
 		state.dragging.hovered_go_id = candidate_go_id
 	end
 end
 
 function M.end_drag(state, mouse_target)
-	if #state.dragging.cards == 0 then return end
+	if #state.dragging.cards == 0 then
+		return
+	end
 
 	if state.dragging.hovered_go_id and go.exists(state.dragging.hovered_go_id) then
 		msg.post(state.dragging.hovered_go_id, "highlight_off")
@@ -109,7 +127,11 @@ function M.end_drag(state, mouse_target)
 
 	local dragged_cards = state.dragging.cards
 	local top_dragged_card = dragged_cards[1]
-	for _, c in ipairs(dragged_cards) do if c.go_id then msg.post(c.go_id, "stop_drag") end end
+	for _, c in ipairs(dragged_cards) do
+		if c.go_id then
+			msg.post(c.go_id, "stop_drag")
+		end
+	end
 
 	local card_pos = go.get_position(top_dragged_card.go_id)
 	local target_pile = Geometry.find_best_pile_overlap(card_pos, state.piles, state.dragging.source_pile_id)
@@ -122,8 +144,10 @@ function M.end_drag(state, mouse_target)
 	if target_pile then
 		local info = CardUtils.get_card_info(top_dragged_card)
 
-		 if info.is_joker and (string.find(target_pile.id, "inventory") ~= nil) and #target_pile.cards == 0 then
-			for _ in ipairs(dragged_cards) do table.remove(source_pile.cards) end
+		if info.is_joker and (string.find(target_pile.id, "inventory") ~= nil) and #target_pile.cards == 0 then
+			for _ in ipairs(dragged_cards) do
+				table.remove(source_pile.cards)
+			end
 			GameFlowSystem.restore_item_from_joker(state, top_dragged_card, target_pile)
 			RenderSystem.redraw_pile(source_pile)
 			return
@@ -145,7 +169,9 @@ function M.end_drag(state, mouse_target)
 		local is_item_use = info.type == GameConfig.TYPE_ITEM and string.find(source_id, "inventory")
 
 		-- Удаляем из источника
-		for _ in ipairs(dragged_cards) do table.remove(source_pile.cards) end
+		for _ in ipairs(dragged_cards) do
+			table.remove(source_pile.cards)
+		end
 
 		if is_item_use then
 			local original_go_id = top_dragged_card.go_id
@@ -175,7 +201,9 @@ function M.end_drag(state, mouse_target)
 			end
 		else
 			-- Обычное перемещение
-			for _, c in ipairs(dragged_cards) do table.insert(target_pile.cards, c) end
+			for _, c in ipairs(dragged_cards) do
+				table.insert(target_pile.cards, c)
+			end
 			if string.find(target_pile.id, "party") then
 				msg.post("game:/game#game_script", "adventurer_leveled_up", { card = top_dragged_card })
 			end
@@ -184,7 +212,8 @@ function M.end_drag(state, mouse_target)
 		RenderSystem.redraw_pile(source_pile)
 		RenderSystem.redraw_pile(target_pile)
 
-		if source_id == "talon" then GameFlowSystem.check_talon(state)
+		if source_id == "talon" then
+			GameFlowSystem.check_talon(state)
 		elseif #source_pile.cards > 0 then
 			GameFlowSystem.check_for_duplicate(state, source_pile.cards[#source_pile.cards], source_pile)
 		end
