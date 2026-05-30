@@ -10,6 +10,9 @@
 Thumbs.db
 desktop.ini
 
+# Debugger
+/debugger
+
 # IDE
 .idea/
 .vscode/settings.json
