@@ -524,4 +524,64 @@ M.register_function(
 	end
 )
 
+-- ---------------------------------------------------------------------------
+-- #6: Vortex Test
+-- Проверка анимации хоровода (победа).
+-- Состояние: карты разложены по подземельям, есть Минотавр.
+-- F2 → trigger_win_animation запускает хоровод.
+-- Наблюдайте: орбиты, атаки, возврат карт.
+-- ---------------------------------------------------------------------------
+M.register_function(
+	"Vortex Test",
+	"Проверка анимации хоровода (победа).\n"
+	.. "  Состояние: карты разложены по подземельям, есть Минотавр.\n"
+	.. "  F2 → trigger_win_animation запускает хоровод.\n"
+	.. "  Наблюдайте: орбиты, атаки, возврат карт.",
+	function(state)
+		local explore_pile = state.piles.explore
+		local deck = explore_pile.cards
+
+		-- 1. Извлекаем босса K_spades
+		local minotaur_card = CardUtils.find_and_remove_card(deck, "K", "spades")
+
+		-- 2. Перемешиваем колоду
+		CardUtils.shuffle(deck)
+
+		-- 3. Раскладываем часть карт по dungeon_2..dungeon_7 (трапецией)
+		for i = 2, 7 do
+			local pile = state.piles["dungeon_" .. i]
+			for c = 1, i do
+				if #deck > 0 then
+					local card = table.remove(deck)
+					card.is_hidden = (c ~= i)
+					table.insert(pile.cards, card)
+				end
+			end
+		end
+
+		-- 4. Кладём босса в dungeon_1 (лицом вверх)
+		if minotaur_card then
+			minotaur_card.is_hidden = false
+			table.insert(state.piles.dungeon_1.cards, minotaur_card)
+		end
+
+		-- 5. Остаток колоды остаётся в explore
+
+		-- 6. Устанавливаем флаги
+		state.is_dealt = true
+		state.is_won = true
+		explore_pile.can_use = false
+
+		-- 7. Запускаем анимацию хоровода
+		local GameFlowSystem = require("game.modules.systems.game_flow_system")
+		GameFlowSystem.trigger_win_animation(state)
+
+		-- 8. Информация в консоль
+		print("DEBUG: Vortex Test - cards in vortex: " .. #state.vortex_cards)
+		if state.win_minotaur_card then
+			print("DEBUG: Vortex Test - boss: " .. (state.win_minotaur_card.face or "?") .. "_" .. (state.win_minotaur_card.suit or "?"))
+		end
+	end
+)
+
 return M
