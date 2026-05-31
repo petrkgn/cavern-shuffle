@@ -28,7 +28,6 @@ local function update_projection_and_scale(self, window_width, window_height)
 	self.screen_height = window_height
 end
 
-
 function init(self)
 	self.time = 0
 
@@ -43,7 +42,6 @@ end
 
 function update(self, dt)
 	self.time = self.time + dt
-
 
 	-- Передаем константы в шейдер фона
 	go.set("#sprite", "time", vmath.vector4(self.time, 0, 0, 0))

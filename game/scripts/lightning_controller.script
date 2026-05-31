@@ -9,10 +9,10 @@ end
 
 function init(self)
 	self.time = 0
-	self.last_t = -1 
+	self.last_t = -1
 
 	self.background_model_url = msg.url("/background#model")
-	self.castle_sprite_url = msg.url("/castle#sprite")	
+	self.castle_sprite_url = msg.url("/castle#sprite")
 
 	msg.post("@render:", "listen_for_resolution")
 
@@ -32,7 +32,7 @@ end
 function update(self, dt)
 	self.time = self.time + dt
 
-	local lightning_check_frequency = 1.5 
+	local lightning_check_frequency = 1.5
 	local lightning_chance_threshold = 0.98 -- Шанс удара (чем меньше число, тем чаще)
 
 	local t = math.floor(lightning_check_frequency * self.time)
@@ -41,10 +41,10 @@ function update(self, dt)
 	local flash_origin_u = 0.0
 	local flash_origin_v = 0.0
 
-	if (hash_glsl(t + 2.3, 0.0) > lightning_chance_threshold) then
+	if hash_glsl(t + 2.3, 0.0) > lightning_chance_threshold then
 		flash_intensity = 1.1
 		flash_origin_u = 0.05 + 0.9 * hash_glsl(t, 0.0) -- От 5% до 95% ширины
-		flash_origin_v = 0.95 
+		flash_origin_v = 0.95
 
 		if t ~= self.last_t then
 			local world_left, _ = Coords.screen_to_game(0, 0)

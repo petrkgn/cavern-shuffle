@@ -12,7 +12,7 @@ function M.get_bounds(pos, width, height)
 		left = pos.x - half_w,
 		right = pos.x + half_w,
 		bottom = pos.y - half_h,
-		top = pos.y + half_h
+		top = pos.y + half_h,
 	}
 end
 
@@ -41,7 +41,6 @@ function M.find_best_pile_overlap(card_pos, piles_table, ignore_id)
 
 	for _, pile in pairs(piles_table) do
 		if pile.id ~= ignore_id then
-
 			-- !!! ИСПРАВЛЕНИЕ ЛОГИКИ !!!
 			-- Определяем, с чем именно мы ищем пересечение: с базой стопки или с последней картой.
 			local target_pos = pile.pos

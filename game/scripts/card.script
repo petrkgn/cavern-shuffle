@@ -26,35 +26,27 @@ function on_message(self, message_id, message, sender)
 		self.card = hash(message.id)
 		self.hidden = hash("")
 		Effects.set_flip_target(self, message.instant)
-
 	elseif message_id == hash("reveal") then
 		if self.hidden == hash("hidden") then
 			self.hidden = hash("")
 			Effects.set_flip_target(self, false)
 		end
-
 	elseif message_id == hash("hide") then
 		if self.hidden ~= hash("hidden") then
 			self.hidden = hash("hidden")
 			Effects.set_flip_target(self, false)
 		end
-
 	elseif message_id == hash("start_drag") then
 		Effects.start_drag(self)
-
 	elseif message_id == hash("stop_drag") then
 		Effects.stop_drag(self)
-
 	elseif message_id == hash("play_hit_effect") then
 		Effects.play_hit_effect(self)
-
 	elseif message_id == hash("highlight_on") then
 		self.is_highlighted = true
-
 	elseif message_id == hash("highlight_off") then
 		self.is_highlighted = false
 		sprite.set_constant("#sprite", "hit_params", vmath.vector4(0, 0, 0, 0))
-
 	elseif message_id == hash("transform_from") then
 		Effects.transform_from(self, message)
 	end

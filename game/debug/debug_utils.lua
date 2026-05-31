@@ -70,17 +70,11 @@ local State = require("game.modules.state")
 local function create_card_go(card_data, pos, is_hidden)
 	-- Для джокера (suit = nil) используем пустую строку
 	local suit_hash = card_data.suit and hash(card_data.suit) or hash("")
-	card_data.go_id = factory.create(
-		"#card_factory",
-		pos,
-		nil,
-		{
-			face = hash(card_data.face),
-			suit = suit_hash,
-			hidden = is_hidden and hash("hidden") or hash("")
-		},
-		CONST.CARD_SCALE
-	)
+	card_data.go_id = factory.create("#card_factory", pos, nil, {
+		face = hash(card_data.face),
+		suit = suit_hash,
+		hidden = is_hidden and hash("hidden") or hash(""),
+	}, CONST.CARD_SCALE)
 	if not is_hidden then
 		timer.delay(0.05, false, function()
 			if card_data.go_id then
@@ -197,8 +191,8 @@ end
 M.register_function(
 	"Talon Duplicate Check",
 	"Проверка дубликатов в Talon после добора из Explore.\n"
-	.. "  Состояние: разложены dungeon 1-7, на верхних картах explore — ловушки.\n"
-	.. "  Игрок кликает Explore → 3 карты в Talon → check_talon() находит дубликаты.",
+		.. "  Состояние: разложены dungeon 1-7, на верхних картах explore — ловушки.\n"
+		.. "  Игрок кликает Explore → 3 карты в Talon → check_talon() находит дубликаты.",
 	function(state)
 		local explore_pile = state.piles.explore
 
@@ -252,8 +246,8 @@ M.register_function(
 M.register_function(
 	"Dungeon Reveal Duplicate",
 	"Проверка дубликата при открытии карты в подземелье.\n"
-	.. "  Состояние: dungeon 1-7 разложены, в dungeon_3 под 04_clubs спрятан 09_diamonds (ловушка).\n"
-	.. "  Drag [04_clubs] (Col 3) → [05_hearts] (Col 2) → откроется [09_diamonds] → улетит.",
+		.. "  Состояние: dungeon 1-7 разложены, в dungeon_3 под 04_clubs спрятан 09_diamonds (ловушка).\n"
+		.. "  Drag [04_clubs] (Col 3) → [05_hearts] (Col 2) → откроется [09_diamonds] → улетит.",
 	function(state)
 		local explore_pile = state.piles.explore
 
@@ -329,8 +323,8 @@ M.register_function(
 M.register_function(
 	"Minotaur Unlock Duplicate",
 	"Проверка дубликата при уходе Минотавра (повышение уровня отряда).\n"
-	.. "  Состояние: Минотавр на Col 2 над 09_diamonds (ловушка), Col 3 = 05_clubs, Col 4 = A_clubs.\n"
-	.. "  Drag [A_clubs] (Col 4) → [05_clubs] (Col 3) → Clubs Level Up → Минотавр уходит → 09_diamonds улетает.",
+		.. "  Состояние: Минотавр на Col 2 над 09_diamonds (ловушка), Col 3 = 05_clubs, Col 4 = A_clubs.\n"
+		.. "  Drag [A_clubs] (Col 4) → [05_clubs] (Col 3) → Clubs Level Up → Минотавр уходит → 09_diamonds улетает.",
 	function(state)
 		local explore_pile = state.piles.explore
 
@@ -357,7 +351,10 @@ M.register_function(
 		-- Пересобираем dungeon_2: скрытая карта → 09_diamonds → Минотавр
 		local pile_2 = state.piles.dungeon_2
 		for _, c in ipairs(pile_2.cards) do
-			if c.go_id then go.delete(c.go_id); c.go_id = nil end
+			if c.go_id then
+				go.delete(c.go_id)
+				c.go_id = nil
+			end
 		end
 		pile_2.cards = {}
 
@@ -420,8 +417,8 @@ M.register_function(
 M.register_function(
 	"Duplicate Under Dragon",
 	"Проверка дубликата при использовании Treasure на party.\n"
-	.. "  Состояние: inventory_1 = Treasure, dungeon_3 = Dragon на 2_hearts, party_1 = A_hearts.\n"
-	.. "  Используйте Treasure на A_hearts → дубликат → check_open_dungeon_duplicates.",
+		.. "  Состояние: inventory_1 = Treasure, dungeon_3 = Dragon на 2_hearts, party_1 = A_hearts.\n"
+		.. "  Используйте Treasure на A_hearts → дубликат → check_open_dungeon_duplicates.",
 	function(state)
 		-- 1. Предметы: Treasure (J_hearts) в inventory_1
 		local treasure = { face = "J", suit = "hearts", is_hidden = false }
@@ -471,9 +468,9 @@ M.register_function(
 M.register_function(
 	"Sequential Treasure Uses",
 	"Проверка двух последовательных использований Treasure (оригинал + от джокера).\n"
-	.. "  Состояние: inventory_1 = Joker, inventory_2 = Treasure, dungeon_3 = 2_hearts, dungeon_4 = 3_hearts, party_1 = A_hearts.\n"
-	.. "  1. Использовать Treasure (оригинал) на A_hearts → 2_hearts в dungeon_3 улетает\n"
-	.. "  2. Восстановить Joker в Treasure → использовать на 2_hearts (party) → 3_hearts в dungeon_4 улетает.",
+		.. "  Состояние: inventory_1 = Joker, inventory_2 = Treasure, dungeon_3 = 2_hearts, dungeon_4 = 3_hearts, party_1 = A_hearts.\n"
+		.. "  1. Использовать Treasure (оригинал) на A_hearts → 2_hearts в dungeon_3 улетает\n"
+		.. "  2. Восстановить Joker в Treasure → использовать на 2_hearts (party) → 3_hearts в dungeon_4 улетает.",
 	function(state)
 		-- 1. Joker в inventory_1 (лицом вверх)
 		local joker = { face = "joker", suit = nil, is_hidden = false, is_wildcard = true }
@@ -510,7 +507,9 @@ M.register_function(
 
 		-- 6. НЕ помечаем карты как дубликаты! Они будут помечены автоматически
 		-- когда игрок использует Treasure через create_placeholder_card.
-		print("DEBUG: 2_hearts and 3_hearts are normal cards in dungeon. They will be marked as duplicates when Treasure is used.")
+		print(
+			"DEBUG: 2_hearts and 3_hearts are normal cards in dungeon. They will be marked as duplicates when Treasure is used."
+		)
 
 		state.is_dealt = true
 		state.piles.explore.can_use = false
@@ -534,9 +533,9 @@ M.register_function(
 M.register_function(
 	"Vortex Test",
 	"Проверка анимации хоровода (победа).\n"
-	.. "  Состояние: карты разложены по подземельям, есть Минотавр.\n"
-	.. "  F2 → trigger_win_animation запускает хоровод.\n"
-	.. "  Наблюдайте: орбиты, атаки, возврат карт.",
+		.. "  Состояние: карты разложены по подземельям, есть Минотавр.\n"
+		.. "  F2 → trigger_win_animation запускает хоровод.\n"
+		.. "  Наблюдайте: орбиты, атаки, возврат карт.",
 	function(state)
 		local explore_pile = state.piles.explore
 		local deck = explore_pile.cards
@@ -579,7 +578,12 @@ M.register_function(
 		-- 8. Информация в консоль
 		print("DEBUG: Vortex Test - cards in vortex: " .. #state.vortex_cards)
 		if state.win_minotaur_card then
-			print("DEBUG: Vortex Test - boss: " .. (state.win_minotaur_card.face or "?") .. "_" .. (state.win_minotaur_card.suit or "?"))
+			print(
+				"DEBUG: Vortex Test - boss: "
+					.. (state.win_minotaur_card.face or "?")
+					.. "_"
+					.. (state.win_minotaur_card.suit or "?")
+			)
 		end
 	end
 )

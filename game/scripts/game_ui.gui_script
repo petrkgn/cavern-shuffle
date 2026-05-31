@@ -1,17 +1,17 @@
 -- /game/game_ui.gui_script
 
 -- Максимальная ширина цветной полоски (должна совпадать с шириной bar_bg в GUI)
-local MAX_BAR_WIDTH = 100 
+local MAX_BAR_WIDTH = 100
 
 -- function init(self)
 -- 	msg.post(".", "acquire_input_focus")
--- 
+--
 -- 	-- Инициализация бара: Сбрасываем в 0
 -- 	local bar_fill = gui.get_node("bar_fill")
 -- 	local size = gui.get_size(bar_fill)
 -- 	size.x = 0
 -- 	gui.set_size(bar_fill, size)
--- 
+--
 -- 	-- Ставим начальный текст
 -- 	local text_node = gui.get_node("text_power")
 -- 	gui.set_text(text_node, "0 / 30")
@@ -26,7 +26,7 @@ function init(self)
 	gui.set_text(gui.get_node("text_dragon"), "30")
 
 	-- Скрываем иконки на старте
-	local suits = {"icon_hearts", "icon_diamonds", "icon_spades", "icon_clubs"}
+	local suits = { "icon_hearts", "icon_diamonds", "icon_spades", "icon_clubs" }
 	for _, name in ipairs(suits) do
 		local node = gui.get_node(name)
 		-- Используем цвет с Alpha 0, чтобы скрыть, но сохранить возможность анимации
@@ -35,13 +35,17 @@ function init(self)
 end
 
 function on_input(self, action_id, action)
-	-- Если игра окончена, игнорируем нажатия кнопок UI, 
+	-- Если игра окончена, игнорируем нажатия кнопок UI,
 	-- но проксируем клики (чтобы работали эффекты, если нужно)
-	if self.is_game_over then return end
+	if self.is_game_over then
+		return
+	end
 
 	if action.pressed then
 		-- Клавиатурные события (F7, F2, etc.) не имеют координат
-		if not action.x or not action.y then return end
+		if not action.x or not action.y then
+			return
+		end
 		local node = gui.get_node("check_moves_button")
 		if gui.pick_node(node, action.x, action.y) then
 			print("Check moves button clicked.")
@@ -59,7 +63,6 @@ function on_message(self, message_id, message, sender)
 		gui.set_text(node, message.text)
 		gui.set_color(node, vmath.vector4(1, 1, 1, 1))
 		gui.animate(node, "color.w", go.PLAYBACK_ONCE_FORWARD, 0, go.EASING_INOUTSINE, 1.0, 2.0)
-
 	elseif message_id == hash("set_game_over") then
 		self.is_game_over = true
 
@@ -75,7 +78,9 @@ function on_message(self, message_id, message, sender)
 
 		-- 2. Анимация Бара Отряда (Растет вправо)
 		local percent = current / target
-		if percent > 1 then percent = 1 end
+		if percent > 1 then
+			percent = 1
+		end
 		local new_width = MAX_BAR_WIDTH * percent
 		local bar_node = gui.get_node("party_bar")
 		gui.animate(bar_node, "size.x", new_width, gui.EASING_OUTSINE, 0.3)

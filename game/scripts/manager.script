@@ -21,7 +21,6 @@ function on_message(self, message_id, message, sender)
 		if not self.game_loaded then
 			msg.post("#game_proxy", "load")
 		end
-
 	elseif message_id == hash("proxy_loaded") then
 		-- Это сообщение пришло от прокси, когда игра загружена в память.
 		print("Manager: Proxy loaded. Enabling game world and giving it focus.")

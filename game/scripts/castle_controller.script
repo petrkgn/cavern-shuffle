@@ -19,7 +19,9 @@ function update(self, dt)
 	local screen_pos = AnchorData.bottom_center
 
 	-- Защита от старта
-	if not screen_pos then return end
+	if not screen_pos then
+		return
+	end
 
 	-- 2. Конвертируем в мир
 	local world_x, world_y = Coords.screen_to_game(screen_pos.x, screen_pos.y)

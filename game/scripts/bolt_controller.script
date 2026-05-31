@@ -12,7 +12,7 @@ function init(self)
 
 	-- Рассчитываем фактор отклонения:
 	-- Если x=0 (слева), factor = 1. Если x=center, factor = 0. Если x=width, factor = -1.
-	local dist_factor = (center_x - my_pos.x) / center_x 
+	local dist_factor = (center_x - my_pos.x) / center_x
 
 	-- Максимальный угол наклона (в радианах). 0.4 rad ≈ 23 градуса.
 	local max_angle = 0.6

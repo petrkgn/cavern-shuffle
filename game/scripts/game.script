@@ -13,9 +13,9 @@ local Coords = require("game.modules.coords")
 -- local function update_score_ui(self)
 -- 	local current_power = self.state.party_power
 -- 	-- Отправляем сообщение в GUI
--- 	msg.post("/game_ui#game_ui", "update_power", { 
--- 		power = current_power, 
--- 		target = 30 
+-- 	msg.post("/game_ui#game_ui", "update_power", {
+-- 		power = current_power,
+-- 		target = 30
 -- 	})
 -- end
 
@@ -32,7 +32,7 @@ local function update_score_ui(self)
 		hearts = (#self.state.piles.party_1.cards > 0),
 		diamonds = (#self.state.piles.party_2.cards > 0),
 		spades = (#self.state.piles.party_3.cards > 0),
-		clubs = (#self.state.piles.party_4.cards > 0)
+		clubs = (#self.state.piles.party_4.cards > 0),
 	}
 
 	-- Шлем новое расширенное сообщение "update_hud"
@@ -40,7 +40,7 @@ local function update_score_ui(self)
 		power = display_power,
 		target = 30,
 		suits = active_suits,
-		dragon_hp = 30 -- Пока статика, потом привяжем к логике
+		dragon_hp = 30, -- Пока статика, потом привяжем к логике
 	})
 end
 
@@ -83,23 +83,19 @@ end
 function on_message(self, message_id, message, sender)
 	if message_id == hash("set_resolution") then
 		Coords.recalculate(message.game_w, message.game_h, message.win_w, message.win_h)
-
 	elseif message_id == hash("reset_game_state") then
 		print("Resetting state...")
-		State.reset(self.state) 
+		State.reset(self.state)
 		RenderSystem.update_deck_sprite(self.state.piles.deck)
 		update_score_ui(self)
-
 	elseif message_id == hash("adventurer_leveled_up") then
 		print(">>>> 1. game.script: Received 'adventurer_leveled_up'!")
 		GameFlowSystem.on_adventurer_leveled_up(self.state, message.card)
 		-- Обновляем бар при получении уровня
 		update_score_ui(self)
-
 	elseif message_id == hash("potion_used") then
 		print(">>>> 1. game.script: Received 'potion_used'!")
 		update_score_ui(self)
-
 	elseif message_id == hash("game_won") then
 		print("GAME WON!")
 		self.state.is_won = true
@@ -113,26 +109,22 @@ function on_message(self, message_id, message, sender)
 		timer.delay(3, false, function()
 			msg.post("/end_game_ui", "enable")
 			msg.post("/end_game_ui#gui", "acquire_input_focus")
-		end) 
-
+		end)
 	elseif message_id == hash("start_restart_sequence") then
 		msg.post("/end_game_ui", "disable")
 		GameFlowSystem.restart_from_win_animation(self.state)
-
 	elseif message_id == hash("restart_animation_finished") then
 		State.reset(self.state)
 		RenderSystem.update_explore_pile_sprite(self.state.piles.explore)
 		msg.post(".", "acquire_input_focus")
 		-- ВАЖНО: Сбрасываем бар при окончании рестарта
 		update_score_ui(self)
-
 	elseif message_id == hash("check_moves") then
 		print("CHECK_MOVES!")
 		GameFlowSystem.check_for_game_over(self.state)
-
 	elseif message_id == hash("game_lost") then
 		print("GAME LOST!")
-		self.state.is_won = true 
+		self.state.is_won = true
 		msg.post(".", "release_input_focus")
 
 		local result_text = gui.get_node("result_text", "/end_game_ui#gui")
@@ -141,20 +133,17 @@ function on_message(self, message_id, message, sender)
 		msg.post("/end_game_ui", "enable")
 		msg.post("/end_game_ui#gui", "acquire_input_focus")
 		msg.post("/game_ui#gui", "set_game_over")
-
 	elseif message_id == hash("proxy_input") then
 		InputSystem.on_input(self.state, message.action_id, message.action)
-
 	elseif message_id == hash("pure_click") then
 		local target = {
 			pile = self.state.piles[message.pile_id],
-			card_index = message.card_index
+			card_index = message.card_index,
 		}
 		local balloon_message = TutorialSystem.get_click_hint(self.state, target)
 		if balloon_message then
 			msg.post("/tutorial_ui#tutorial_ui", "show_balloon", balloon_message)
 		end
-
 	elseif message_id == hash("drag_failed") then
 		local source_pile = self.state.piles[message.source_pile_id]
 		local balloon_message = TutorialSystem.get_drag_fail_hint(message.card_data, source_pile)

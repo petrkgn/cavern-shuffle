@@ -3,7 +3,7 @@
 -- 	-- Важно: компонент в magic_poof.go должен называться "particle"
 -- 	particlefx.play("#particle")
 -- end
--- 
+--
 -- function on_message(self, message_id, message, sender)
 -- 	-- Defold сам присылает это сообщение, когда частицы догорели
 -- 	-- if message_id == hash("particlefx_complete") then

@@ -15,17 +15,17 @@
 --
 -- message constants
 --
-local MSG_CLEAR_COLOR =         hash("clear_color")
-local MSG_WINDOW_RESIZED =      hash("window_resized")
-local MSG_SET_VIEW_PROJ =       hash("set_view_projection")
-local MSG_SET_CAMERA_PROJ =     hash("use_camera_projection")
-local MSG_USE_STRETCH_PROJ =    hash("use_stretch_projection")
-local MSG_USE_FIXED_PROJ =      hash("use_fixed_projection")
-local MSG_USE_FIXED_FIT_PROJ =  hash("use_fixed_fit_projection")
+local MSG_CLEAR_COLOR = hash("clear_color")
+local MSG_WINDOW_RESIZED = hash("window_resized")
+local MSG_SET_VIEW_PROJ = hash("set_view_projection")
+local MSG_SET_CAMERA_PROJ = hash("use_camera_projection")
+local MSG_USE_STRETCH_PROJ = hash("use_stretch_projection")
+local MSG_USE_FIXED_PROJ = hash("use_fixed_projection")
+local MSG_USE_FIXED_FIT_PROJ = hash("use_fixed_fit_projection")
 
 local DEFAULT_NEAR = -1
-local DEFAULT_FAR =   1
-local DEFAULT_ZOOM =  1
+local DEFAULT_FAR = 1
+local DEFAULT_ZOOM = 1
 
 --
 -- projection that centers content with maintained aspect ratio and optional zoom
@@ -81,8 +81,10 @@ local function notify_listeners(self)
 
 	for url, _ in pairs(self.listeners) do
 		msg.post(url, "set_resolution", {
-			win_w = win_w, win_h = win_h,
-			game_w = game_w, game_h = game_h
+			win_w = win_w,
+			win_h = win_h,
+			game_w = game_w,
+			game_h = game_h,
 		})
 	end
 end
@@ -94,12 +96,12 @@ local function update_state(state)
 	if not state.valid then
 		return false, false
 	end
-	
+
 	local changed = false
 	if state.window_width ~= state.prev_window_width or state.window_height ~= state.prev_window_height then
 		changed = true
 	end
-	
+
 	state.prev_window_width = state.window_width
 	state.prev_window_height = state.window_height
 	state.width = render.get_width()
@@ -119,10 +121,10 @@ local function init_camera(camera, projection_fn, near, far, zoom)
 end
 
 local function create_predicates(...)
-	local arg = {...}
+	local arg = { ... }
 	local predicates = {}
 	for _, predicate_name in pairs(arg) do
-		predicates[predicate_name] = render.predicate({predicate_name})
+		predicates[predicate_name] = render.predicate({ predicate_name })
 	end
 	return predicates
 end
@@ -147,7 +149,7 @@ local function create_state()
 	state.clear_buffers = {
 		[graphics.BUFFER_TYPE_COLOR0_BIT] = color,
 		[graphics.BUFFER_TYPE_DEPTH_BIT] = 1,
-		[graphics.BUFFER_TYPE_STENCIL_BIT] = 0
+		[graphics.BUFFER_TYPE_STENCIL_BIT] = 0,
 	}
 	state.cameras = {}
 	return state
@@ -187,8 +189,12 @@ end
 
 function init(self)
 	self.predicates = create_predicates("tile", "gui", "particle", "model", "debug_text")
-	self.background_pred = render.predicate({"background"}, {render.STATE_DEPTH_TEST, render.STATE_BLEND}, render.COMPARE_FUNC_LEQUAL)
-	self.gradient_sky = render.predicate({"gradient_sky"}, nil, render.COMPARE_FUNC_LEQUAL)
+	self.background_pred = render.predicate(
+		{ "background" },
+		{ render.STATE_DEPTH_TEST, render.STATE_BLEND },
+		render.COMPARE_FUNC_LEQUAL
+	)
+	self.gradient_sky = render.predicate({ "gradient_sky" }, nil, render.COMPARE_FUNC_LEQUAL)
 	-- default is stretch projection. copy from builtins and change for different projection
 	-- or send a message to the render script to change projection:
 	-- msg.post("@render:", "use_stretch_projection", { near = -1, far = 1 })
@@ -216,7 +222,7 @@ function update(self)
 	if not valid then
 		return
 	end
-	
+
 	if changed then
 		notify_listeners(self)
 	end
@@ -263,7 +269,6 @@ function update(self)
 
 	render.draw_debug3d()
 
-
 	reset_camera_world(state)
 
 	-- render GUI
@@ -305,7 +310,9 @@ function on_message(self, message_id, message, sender)
 		self.camera_projection = message.projection or vmath.matrix4()
 		update_camera(camera, state)
 	elseif message_id == MSG_SET_CAMERA_PROJ then
-		camera.projection_fn = function() return self.camera_projection end
+		camera.projection_fn = function()
+			return self.camera_projection
+		end
 	elseif message_id == MSG_USE_STRETCH_PROJ then
 		init_camera(camera, get_stretch_projection, message.near, message.far)
 		update_camera(camera, state)

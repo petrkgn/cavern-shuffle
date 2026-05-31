@@ -61,7 +61,7 @@ M.ROW_Y[1] = DESIGN_HEIGHT - MARGIN_TOP - (M.CARD_HEIGHT / 2)
 
 -- Остальные ряды строятся относительно первого вниз
 for i = 2, 5 do
-	M.ROW_Y[i] = M.ROW_Y[i-1] - M.CARD_HEIGHT - PADDING_Y
+	M.ROW_Y[i] = M.ROW_Y[i - 1] - M.CARD_HEIGHT - PADDING_Y
 end
 
 -- === ДЕБАГ ИНФО (Можно убрать потом) ===

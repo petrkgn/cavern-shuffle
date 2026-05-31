@@ -7,7 +7,20 @@ M.FACES = { "A", "02", "03", "04", "05", "06", "07", "08", "09", "10", "J", "Q",
 M.SUITS = { "clubs", "diamonds", "hearts", "spades" }
 
 -- Какая карта идет перед текущей (для правил пасьянса)
-M.LESS_TABLE = { ["K"]="Q", ["Q"]="J", ["J"]="10", ["10"]="09", ["09"]="08", ["08"]="07", ["07"]="06", ["06"]="05", ["05"]="04", ["04"]="03", ["03"]="02", ["02"]="A" }
+M.LESS_TABLE = {
+	["K"] = "Q",
+	["Q"] = "J",
+	["J"] = "10",
+	["10"] = "09",
+	["09"] = "08",
+	["08"] = "07",
+	["07"] = "06",
+	["06"] = "05",
+	["05"] = "04",
+	["04"] = "03",
+	["03"] = "02",
+	["02"] = "A",
+}
 
 function M.create_standard_deck()
 	local cards = {}
@@ -48,10 +61,10 @@ function M.get_card_info(card)
 			suit = nil,
 			go_id = card.go_id,
 			is_hidden = card.is_hidden,
-			value = nil,                          -- Джокер не имеет числового значения
-			type = GameConfig.TYPE_ITEM,          -- Это предмет
+			value = nil, -- Джокер не имеет числового значения
+			type = GameConfig.TYPE_ITEM, -- Это предмет
 			name = "Joker",
-			is_joker = true                       -- Флаг для идентификации в правилах
+			is_joker = true, -- Флаг для идентификации в правилах
 		}
 	end
 
@@ -63,7 +76,7 @@ function M.get_card_info(card)
 		go_id = card.go_id,
 		is_hidden = card.is_hidden,
 		value = GameConfig.DEFAULT_FACE_VALUES[card.face],
-		type = GameConfig.TYPE_ADVENTURER
+		type = GameConfig.TYPE_ADVENTURER,
 	}
 
 	local key = card.face .. "_" .. card.suit
