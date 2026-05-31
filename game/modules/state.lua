@@ -33,6 +33,8 @@ function M.init()
 	M.data.vortex_cards = {}     -- Карты, которые вращаются в хороводе
 	M.data.restarting_cards = {} -- Карты, которые летят в колоду для перезапуска
 	M.data.win_minotaur_card = nil   -- Будет хранить ОДНУ ТАБЛИЦУ карты Минотавра
+	M.data.vortex_attack_in_progress = false
+	M.data.vortex_slash_go = nil
 	M.data.dragging = {
 		cards = {},
 		source_pile_id = nil,
@@ -132,6 +134,8 @@ function M.reset(state_data)
 	state_data.vortex_cards = {}     -- <<-- Добавьте эту строку
 	state_data.restarting_cards = {} -- <<-- И эту
 	state_data.win_minotaur_card = nil
+	state_data.vortex_attack_in_progress = false
+	state_data.vortex_slash_go = nil
 	state_data.temporary_power_buff = { suit = nil, amount = 0 }
 	state_data.is_restarting = false -- "Размораживаем" игру
 	

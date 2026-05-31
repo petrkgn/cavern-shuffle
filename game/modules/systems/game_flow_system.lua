@@ -891,6 +891,9 @@ function M.trigger_win_animation(state)
 	msg.post(state.piles.explore.placeholder_go, "set_sprite", { id = "card_empty" })
 
 	-- 3. Перемещаем ДАННЫЕ в state
+	-- 3.5. Сбрасываем состояние атак в хороводе
+	state.vortex_attack_in_progress = false
+	state.vortex_slash_go = nil
 	state.vortex_cards = cards_for_vortex
 	state.win_minotaur_card = minotaur_data -- Используем старое поле, оно нам подходит
 end

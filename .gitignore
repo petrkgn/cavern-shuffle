@@ -27,3 +27,6 @@ manifest.private.key
 *.private.*.env
 .aider*
 .env
+
+# omp (personal project config — session data, memories, etc.)
+/.omp
