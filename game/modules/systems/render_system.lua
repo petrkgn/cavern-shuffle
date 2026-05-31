@@ -333,12 +333,13 @@ function M.update_animations(state, dt)
 		if state.vortex_attack_timer <= 0 then
 			state.vortex_attack_timer = 0.5 + math.random() * 1.0 -- Атаки чуть чаще для динамики
 
-			if #state.vortex_cards > 0 then
+			if #state.vortex_cards > 0 and not state.vortex_attack_in_progress then
 				local attacker_card = state.vortex_cards[math.random(#state.vortex_cards)]
 
 				-- Убедимся, что карта существует и она еще не в атаке
 				if attacker_card and attacker_card.go_id and not attacker_card.is_attacking then
 					attacker_card.is_attacking = true
+					state.vortex_attack_in_progress = true
 
 					-- Запоминаем исходную позицию (хотя она пересчитается в цикле, но для старта анимации полезно)
 					local start_pos = go.get_position(attacker_card.go_id)
@@ -362,6 +363,7 @@ function M.update_animations(state, dt)
 						0,
 						function()
 							if not go.exists(attacker_card.go_id) then
+								state.vortex_attack_in_progress = false
 								return
 							end
 
@@ -372,10 +374,12 @@ function M.update_animations(state, dt)
 								msg.post(state.win_minotaur_card.go_id, "play_hit_effect")
 							end
 
-							-- Б. Спавн Слэша (Поверх всего, Z=0.7)
+							-- Б. Спавн Слэша (только один активный за раз)
+							if state.vortex_slash_go and go.exists(state.vortex_slash_go) then
+								go.delete(state.vortex_slash_go)
+							end
 							local slash_pos = vmath.vector3(screen_center.x, screen_center.y, 0.7)
-							-- Используем абсолютный URL к фабрике, так как RenderSystem - это Lua модуль
-							factory.create("game:/game#slash_factory", slash_pos, nil, {}, 2)
+							state.vortex_slash_go = factory.create("game:/game#slash_factory", slash_pos, nil, {}, 2)
 
 							-- ЭТАП 3: ВОЗВРАТ ОБРАТНО
 							-- Мы просто отпускаем флаг через небольшую паузу или анимацию отлета.
@@ -396,6 +400,7 @@ function M.update_animations(state, dt)
 								0,
 								function()
 									attacker_card.is_attacking = false
+									state.vortex_attack_in_progress = false
 									-- Z-индекс сам исправится в следующем кадре в цикле vortex
 								end
 							)
