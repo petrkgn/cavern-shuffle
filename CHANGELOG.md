@@ -17,6 +17,24 @@
 
 ## История изменений
 
+### 2026-06-06 — Декомпозиция game_flow_system: разделение по игровым механикам
+
+**Файлы:**
+- `game/modules/systems/game_flow_system.lua` — удалены функции предметов, столкновений и финала; оставлены раздача (`deal`, `handle_explore_click`) и проверка дубликатов (`check_talon`, `check_for_duplicate`, `check_open_dungeon_duplicates`)
+- `game/modules/systems/item_system.lua` — **новый модуль**: `use_item`, `execute_short_rest_chain`, `restore_item_from_joker`, `use_potion_of_strength`, `use_treasure`, `use_short_rest`
+- `game/modules/systems/encounter_system.lua` — **новый модуль**: `try_resolve_encounter`, `on_adventurer_leveled_up`
+- `game/modules/systems/endgame_system.lua` — **новый модуль**: `trigger_win_animation`, `restart_from_win_animation`, `check_for_game_over`, `check_win`, `restart_game`, `restart_game_animation_fallback`
+- `game/modules/systems/input_system.lua` — обновлены импорты: добавлены `EncounterSystem`, `EndgameSystem`
+- `game/modules/systems/drag_drop_system.lua` — обновлены импорты: добавлен `ItemSystem`
+- `game/scripts/game.script` — обновлены импорты: добавлены `EncounterSystem`, `EndgameSystem`
+- `game/debug/debug_utils.lua` — `trigger_win_animation` вызывается через `EndgameSystem`
+
+**Причина:** `game_flow_system.lua` разросся до 955 строк, смешивая в себе четыре разных игровых механики (предметы, бои, финал, поток карт). Это затрудняло навигацию и повышало риск конфликтов при параллельной работе над разными фичами.
+
+**Результат:** Модуль разделён на четыре системы по механике: `game_flow_system` (327 строк), `item_system` (258 строк), `encounter_system` (197 строк), `endgame_system` (171 строка). Зависимости строго ацикличны: `endgame_system` самодостаточен, `item_system` и `encounter_system` зависят только от `game_flow_system`. Внешние вызывающие модули (`input_system`, `drag_drop_system`, `game.script`) обновлены на новые пути импорта.
+
+---
+
 ### 2026-05-31 — Защита анимации хоровода от наложения атак и дебаг-функция Vortex Test
 
 **Файлы:**
