@@ -1,6 +1,8 @@
 -- /game/modules/systems/input_system.lua
 
 local GameFlowSystem = require("game.modules.systems.game_flow_system")
+local EncounterSystem = require("game.modules.systems.encounter_system")
+local EndgameSystem = require("game.modules.systems.endgame_system")
 local DragDropSystem = require("game.modules.systems.drag_drop_system")
 
 local Coords = require("game.modules.coords")
@@ -127,7 +129,7 @@ function M.on_input(state, action_id, action)
 						if state.click.target.card_index > 0 then
 							-- Клик был по конкретной карте, а не по пустой стопке
 							local clicked_card = target_pile.cards[state.click.target.card_index]
-							GameFlowSystem.try_resolve_encounter(state, clicked_card, target_pile)
+							EncounterSystem.try_resolve_encounter(state, clicked_card, target_pile)
 						else
 							print("Clicked on an empty pile:", target_pile.id)
 						end
@@ -158,7 +160,7 @@ function M.on_input(state, action_id, action)
 	end
 
 	if corrected_action.released and (not state.dragging or #state.dragging.cards == 0) then
-		GameFlowSystem.check_win(state)
+		EndgameSystem.check_win(state)
 	end
 end
 

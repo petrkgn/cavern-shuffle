@@ -4,6 +4,8 @@ local State = require("game.modules.state")
 local InputSystem = require("game.modules.systems.input_system")
 local RenderSystem = require("game.modules.systems.render_system")
 local GameFlowSystem = require("game.modules.systems.game_flow_system")
+local EncounterSystem = require("game.modules.systems.encounter_system")
+local EndgameSystem = require("game.modules.systems.endgame_system")
 local TutorialSystem = require("game.modules.systems.tutorial_system")
 local DebugUtils = require("game.debug.debug_utils")
 
@@ -90,7 +92,7 @@ function on_message(self, message_id, message, sender)
 		update_score_ui(self)
 	elseif message_id == hash("adventurer_leveled_up") then
 		print(">>>> 1. game.script: Received 'adventurer_leveled_up'!")
-		GameFlowSystem.on_adventurer_leveled_up(self.state, message.card)
+		EncounterSystem.on_adventurer_leveled_up(self.state, message.card)
 		-- Обновляем бар при получении уровня
 		update_score_ui(self)
 	elseif message_id == hash("potion_used") then
@@ -103,7 +105,7 @@ function on_message(self, message_id, message, sender)
 		msg.post(".", "release_input_focus")
 
 		timer.delay(0, false, function()
-			GameFlowSystem.trigger_win_animation(self.state)
+			EndgameSystem.trigger_win_animation(self.state)
 		end)
 
 		timer.delay(3, false, function()
@@ -112,7 +114,7 @@ function on_message(self, message_id, message, sender)
 		end)
 	elseif message_id == hash("start_restart_sequence") then
 		msg.post("/end_game_ui", "disable")
-		GameFlowSystem.restart_from_win_animation(self.state)
+		EndgameSystem.restart_from_win_animation(self.state)
 	elseif message_id == hash("restart_animation_finished") then
 		State.reset(self.state)
 		RenderSystem.update_explore_pile_sprite(self.state.piles.explore)
@@ -121,7 +123,7 @@ function on_message(self, message_id, message, sender)
 		update_score_ui(self)
 	elseif message_id == hash("check_moves") then
 		print("CHECK_MOVES!")
-		GameFlowSystem.check_for_game_over(self.state)
+		EndgameSystem.check_for_game_over(self.state)
 	elseif message_id == hash("game_lost") then
 		print("GAME LOST!")
 		self.state.is_won = true

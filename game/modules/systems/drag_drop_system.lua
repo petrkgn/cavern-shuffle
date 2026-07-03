@@ -3,11 +3,11 @@
 local RenderSystem = require("game.modules.systems.render_system")
 local RulesSystem = require("game.modules.systems.rules_system")
 local GameFlowSystem = require("game.modules.systems.game_flow_system")
+local ItemSystem = require("game.modules.systems.item_system")
 local CardUtils = require("game.modules.card_utils")
 local GameConfig = require("game.modules.game_config")
 local CONST = require("game.modules.constants")
 local Geometry = require("game.modules.geometry")
-
 local M = {}
 
 -- Вспомогательная функция: Выбираем, ЧТО именно подсвечивать в стопке
@@ -148,7 +148,7 @@ function M.end_drag(state, mouse_target)
 			for _ in ipairs(dragged_cards) do
 				table.remove(source_pile.cards)
 			end
-			GameFlowSystem.restore_item_from_joker(state, top_dragged_card, target_pile)
+			ItemSystem.restore_item_from_joker(state, top_dragged_card, target_pile)
 			RenderSystem.redraw_pile(source_pile)
 			return
 		end
@@ -177,7 +177,7 @@ function M.end_drag(state, mouse_target)
 			local original_go_id = top_dragged_card.go_id
 
 			-- Вызываем логику применения предмета
-			if not GameFlowSystem.use_item(state, top_dragged_card, target_pile, source_id) then
+			if not ItemSystem.use_item(state, top_dragged_card, target_pile, source_id) then
 				table.insert(source_pile.cards, top_dragged_card)
 				RenderSystem.animate_return(dragged_cards, source_pile)
 			else

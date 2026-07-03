@@ -572,8 +572,8 @@ M.register_function(
 		explore_pile.can_use = false
 
 		-- 7. Запускаем анимацию хоровода
-		local GameFlowSystem = require("game.modules.systems.game_flow_system")
-		GameFlowSystem.trigger_win_animation(state)
+		local EndgameSystem = require("game.modules.systems.endgame_system")
+		EndgameSystem.trigger_win_animation(state)
 
 		-- 8. Информация в консоль
 		print("DEBUG: Vortex Test - cards in vortex: " .. #state.vortex_cards)
