@@ -17,6 +17,26 @@
 
 ## История изменений
 
+### 2026-06-07 — Обновление API Defold до версии 1.8+
+
+**Файлы:**
+- `game/shaders/card.material` — переименован uniform `cursor` → `cursor_data`
+- `game/shaders/card_flip.fp` — обновлены все ссылки на uniform `cursor_data`
+- `game/shaders/card_flip.vp` — обновлены все ссылки на uniform `cursor_data`
+- `game/modules/card_effects.lua` — замены `sprite.set_constant` → `go.set`, переименование `cursor` → `cursor_data`
+- `game/scripts/card.script` — замены `sprite.set_constant` → `go.set`
+- `game/scripts/one_shot_effect.script` — замена `sprite.set_constant` → `go.set`
+- `game/render/game.render_script` — замены `render.STATE_*` / `render.COMPARE_FUNC_*` → `graphics.*`
+- `game/scripts/background_controller.script` — замены `sys.get_config` → `sys.get_config_number`
+- `game/scripts/bolt_controller.script` — замена `sys.get_config` → `sys.get_config_number`
+- `game/scripts/castle_controller.script` — замены `sys.get_config` → `sys.get_config_number`
+- `game/scripts/lightning_controller.script` — замены `sys.get_config` → `sys.get_config_number`
+- `main/game.collection` — путь к mesh изменён с `meshes/quad_2x2.dae` на `gltf/quad_2x2.gltf`
+- `.gitignore` — добавлено `.editor_settings`
+
+**Причина:** Деprecation-предупреждения в Defold 1.8+: `sprite.set_constant`, `sys.get_config`, `render.STATE_*`, `render.COMPARE_FUNC_*` и формат `.dae` были помечены как устаревшие.
+
+**Результат:** Все вызовы обновлены до актуального API. Игра работает без предупреждений в Defold 1.8+.
 ### 2026-06-06 — Декомпозиция game_flow_system: разделение по игровым механикам
 
 **Файлы:**
