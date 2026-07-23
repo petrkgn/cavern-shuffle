@@ -70,13 +70,13 @@ uniform highp vec4 hit_params; // x = is_hit, y = intensity, z = flash_speed
 
 uniform lowp sampler2D texture_sampler;
 uniform lowp vec4 tint;
-uniform highp vec4 cursor; // x=mouse_x, y=mouse_y, z=intensity
+uniform highp vec4 cursor_data; // x=mouse_x, y=mouse_y, z=intensity
 
 void main()
 {
 	// 1. ПАРАЛЛАКС
 	// Сдвигаем UV против движения мыши
-	vec2 parallax = cursor.xy * 0.00001 * cursor.z;
+	vec2 parallax = cursor_data.xy * 0.00001 * cursor_data.z;
 	lowp vec4 color = texture2D(texture_sampler, var_texcoord0 - parallax);
 
 	if (color.a < 0.01) discard;
@@ -118,12 +118,12 @@ void main()
 	}
 
 	// 2. БЛИКИ НА ГРАНЯХ (RIM LIGHT)
-	if (cursor.z > 0.01)
+	if (cursor_data.z > 0.01)
 	{
 		// Вектор от центра карты к текущему пикселю
 		vec2 to_pixel = normalize(var_local_pos);
 		// Вектор от центра карты к мыши
-		vec2 to_mouse = normalize(cursor.xy);
+		vec2 to_mouse = normalize(cursor_data.xy);
 
 		// Совпадение направлений (свет падает со стороны мыши)
 		float light = max(0.0, dot(to_pixel, to_mouse));
@@ -138,16 +138,16 @@ void main()
 		// float border = smoothstep(5.0, 95.0, dist);
 
 		// Рисуем
-		rgb += vec3(1.0) * light * border * 0.8 * cursor.z;
+		rgb += vec3(1.0) * light * border * 0.8 * cursor_data.z;
 	}
 
 
 // ВРЕМЕННЫЙ ТЕСТОВЫЙ БЛОК
-// Убрали проверку cursor.z > 0.01, чтобы видеть эффект всегда, если cursor передан
+// Убрали проверку cursor_data.z > 0.01, чтобы видеть эффект всегда, если cursor_data передан
 // if (true)
 // {
 // 	vec2 to_pixel = normalize(var_local_pos);
-// 	vec2 to_mouse = normalize(cursor.xy);
+// 	vec2 to_mouse = normalize(cursor_data.xy);
 // 
 // 	// Расчет света
 // 	float light = max(0.0, dot(to_pixel, to_mouse));
@@ -162,7 +162,7 @@ void main()
 // 	float border = smoothstep(10.0, 95.0, dist);
 // 
 // 	// ЯДОВИТЫЙ ЦВЕТ (Фиолетовый) и ДИКАЯ ЯРКОСТЬ (* 5.0)
-// 	// Убрали множитель cursor.z, чтобы блик был даже если мышка не двигается (но координаты нужны)
+// 	// Убрали множитель cursor_data.z, чтобы блик был даже если мышка не двигается (но координаты нужны)
 // 	vec3 debug_color = vec3(1.0, 0.0, 1.0); 
 // 
 // 	rgb += debug_color * light * border * 5.0;

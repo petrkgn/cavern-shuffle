@@ -36,7 +36,7 @@ fragment_constants {
   }
 }
 fragment_constants {
-  name: "cursor"
+  name: "cursor_data"
   type: CONSTANT_TYPE_USER
   value {
   }

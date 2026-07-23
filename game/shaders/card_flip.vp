@@ -176,7 +176,7 @@
 uniform highp mat4 view_proj;
 uniform highp vec4 settings;    // x=rot(flip), y=center_x, z=center_y
 uniform highp vec4 deformation; // x=velocity_x (inertia)
-uniform highp vec4 cursor;      // x=tilt_x, y=tilt_y, z=intensity
+uniform highp vec4 cursor_data;      // x=tilt_x, y=tilt_y, z=intensity
 
 uniform highp vec4 time_vec;   // x = time
 uniform highp vec4 hit_params; 
@@ -251,14 +251,14 @@ void main()
 	// var_local_pos = vec2(x, y); 
 	
 	// === 3. MOUSE TILT (3D Rotation) - Эффект React ===
-	// cursor.x (мышь лево/право) -> Вращение вокруг Y
-	// cursor.y (мышь верх/низ)   -> Вращение вокруг X
-	// cursor.z - сила эффекта (0 или 1)
+	// cursor_data.x (мышь лево/право) -> Вращение вокруг Y
+	// cursor_data.y (мышь верх/низ)   -> Вращение вокруг X
+	// cursor_data.z - сила эффекта (0 или 1)
 
 	// Максимальный угол наклона (в радианах). 0.3 rad ~= 17 градусов
 	float max_tilt = 0.6; 
-	float tilt_y = cursor.x * max_tilt * cursor.z; // Вокруг Y
-	float tilt_x = -cursor.y * max_tilt * cursor.z; // Вокруг X (инвертируем для естественности)
+	float tilt_y = cursor_data.x * max_tilt * cursor_data.z; // Вокруг Y
+	float tilt_x = -cursor_data.y * max_tilt * cursor_data.z; // Вокруг X (инвертируем для естественности)
 
 	// Вращение вокруг Y (Tilt Left/Right)
 	// x' = x*cos - z*sin
