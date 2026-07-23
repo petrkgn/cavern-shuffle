@@ -30,3 +30,4 @@ manifest.private.key
 
 # omp (personal project config — session data, memories, etc.)
 /.omp
+/.editor_settings

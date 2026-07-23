@@ -16,10 +16,10 @@ function init(self)
 
 	msg.post("@render:", "listen_for_resolution")
 
-	self.win_w = sys.get_config("display.width")
-	self.win_h = sys.get_config("display.height")
-	self.game_w = sys.get_config("display.width")
-	self.game_h = sys.get_config("display.height")
+	self.win_w = sys.get_config_number("display.width")
+	self.win_h = sys.get_config_number("display.height")
+	self.game_w = sys.get_config_number("display.width")
+	self.game_h = sys.get_config_number("display.height")
 
 	Coords.recalculate(self.win_w, self.win_h, self.win_w, self.win_h)
 

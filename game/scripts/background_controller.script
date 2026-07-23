@@ -3,8 +3,8 @@
 -- Эта функция теперь принимает ширину и высоту окна, чтобы не вызывать запрещенных функций
 local function update_projection_and_scale(self, window_width, window_height)
 	-- 1. Получаем размеры игры из настроек проекта
-	local game_width = sys.get_config("display.width")
-	local game_height = sys.get_config("display.height")
+	local game_width = sys.get_config_number("display.width")
+	local game_height = sys.get_config_number("display.height")
 
 	-- 2. Рассчитываем масштабы для fit-проекции (как это делает рендер)
 	local game_aspect = game_width / game_height
@@ -35,8 +35,8 @@ function init(self)
 	msg.post(".", "acquire_input_focus")
 
 	-- Вызываем функцию один раз при старте, используя размеры из game.project
-	local initial_width = sys.get_config("display.width")
-	local initial_height = sys.get_config("display.height")
+	local initial_width = sys.get_config_number("display.width")
+	local initial_height = sys.get_config_number("display.height")
 	update_projection_and_scale(self, initial_width, initial_height)
 end
 

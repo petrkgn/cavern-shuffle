@@ -6,7 +6,7 @@ function init(self)
 
 	-- 2. НАКЛОН К ЦЕНТРУ (К ЗАМКУ)
 	-- Получаем ширину экрана из конфига (или можно передать через factory.create, но так проще)
-	local win_w = sys.get_config("display.width")
+	local win_w = sys.get_config_number("display.width")
 	local center_x = win_w / 2
 	local my_pos = go.get_position()
 

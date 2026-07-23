@@ -5,8 +5,8 @@ function init(self)
 	self.time = 0
 
 	-- Базовые настройки (для шейдера, если он нужен)
-	self.win_w = sys.get_config("display.width")
-	self.win_h = sys.get_config("display.height")
+	self.win_w = sys.get_config_number("display.width")
+	self.win_h = sys.get_config_number("display.height")
 
 	-- Подписка на ресайз (важно для Coords)
 	msg.post("@render:", "listen_for_resolution")
