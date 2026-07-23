@@ -231,11 +231,11 @@ function M.update(self, dt, mx, my)
 	update_tilt(self, dt, mx, my)
 	update_hit(self, dt)
 
-	sprite.set_constant("#sprite", "settings", self.rot_vec)
-	sprite.set_constant("#sprite", "deformation", self.deformation_vec)
-	sprite.set_constant("#sprite", "cursor", self.cursor_vec)
-	sprite.set_constant("#sprite", "time_vec", self.time_vec)
-	sprite.set_constant("#sprite", "hit_params", self.hit_vec)
+	go.set("#sprite", "settings", self.rot_vec)
+	go.set("#sprite", "deformation", self.deformation_vec)
+	go.set("#sprite", "cursor_data", self.cursor_vec)
+	go.set("#sprite", "time_vec", self.time_vec)
+	go.set("#sprite", "hit_params", self.hit_vec)
 end
 
 function M.set_flip_target(self, instant)
@@ -246,7 +246,7 @@ function M.set_flip_target(self, instant)
 		self.current_rot = 1.0
 		self.target_rot = 1.0
 		self.rot_vec.x = 1.0
-		sprite.set_constant("#sprite", "settings", self.rot_vec)
+		go.set("#sprite", "settings", self.rot_vec)
 		self.pending_anim = nil
 	else
 		self.current_rot = 1.0
@@ -257,7 +257,7 @@ end
 function M.start_drag(self)
 	self.is_dragging = true
 	self.is_highlighted = false
-	sprite.set_constant("#sprite", "hit_params", vmath.vector4(0, 0, 0, 0))
+	go.set("#sprite", "hit_params", vmath.vector4(0, 0, 0, 0))
 end
 
 function M.stop_drag(self)

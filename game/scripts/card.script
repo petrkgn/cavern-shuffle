@@ -17,7 +17,7 @@ function update(self, dt)
 	local mx, my = State.data.mouse_x, State.data.mouse_y
 	Effects.update(self, dt, mx, my)
 	if self.is_highlighted then
-		sprite.set_constant("#sprite", "hit_params", vmath.vector4(2.0, 0.4, 5.0, 0))
+		go.set("#sprite", "hit_params", vmath.vector4(2.0, 0.4, 5.0, 0))
 	end
 end
 
@@ -46,7 +46,7 @@ function on_message(self, message_id, message, sender)
 		self.is_highlighted = true
 	elseif message_id == hash("highlight_off") then
 		self.is_highlighted = false
-		sprite.set_constant("#sprite", "hit_params", vmath.vector4(0, 0, 0, 0))
+		go.set("#sprite", "hit_params", vmath.vector4(0, 0, 0, 0))
 	elseif message_id == hash("transform_from") then
 		Effects.transform_from(self, message)
 	end
